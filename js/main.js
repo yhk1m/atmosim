@@ -8,6 +8,7 @@ import { createOrbit } from './scene/orbit.js';
 import { createEarth } from './scene/earth.js';
 import { createWind } from './scene/wind.js';
 import { createBelts } from './scene/belts.js';
+import { createItcz } from './scene/itcz.js';
 import { createLines } from './scene/lines.js';
 import { createCells } from './scene/cells.js';
 import { createPolar } from './scene/polar.js';
@@ -33,6 +34,8 @@ const wind = createWind();
 earth.tilted.add(wind.group);
 const belts = createBelts();
 earth.tilted.add(belts.group);
+const itcz = createItcz();
+earth.spin.add(itcz.group); // 열적도는 대륙(지표)에 고정 — 자전 그룹에 부착
 const lines = createLines();
 earth.tilted.add(lines.group);
 const cells = createCells();
@@ -78,6 +81,7 @@ function tick(now) {
   earth.update(s, dt);
   wind.update(s, dt);
   belts.update(s);
+  itcz.update(s);
   lines.update(s);
   cells.update(s, dt);
   polar.update(s);

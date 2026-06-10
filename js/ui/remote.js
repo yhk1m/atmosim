@@ -15,9 +15,21 @@ export function initRemote() {
   document.querySelectorAll('.season').forEach((b) => {
     b.onclick = () => setState({ dayOfYear: +b.dataset.day, revolving: false });
   });
-  document.querySelectorAll('#toggles input').forEach((c) => {
+  document.querySelectorAll('#toggles input[data-key]').forEach((c) => {
     c.onchange = () => setToggle(c.dataset.key, c.checked);
   });
+
+  // 일괄 선택/해제 (바람 전체 / 전체)
+  const WIND_KEYS = ['trade', 'west', 'polarwind'];
+  const ALL_KEYS = ['trade', 'west', 'polarwind', 'belts', 'itcz', 'latlines', 'cells', 'polar'];
+  const windAll = $('windAll'), allToggles = $('allToggles');
+  function setKeys(keys, on) {
+    const t = { ...getState().toggles };
+    keys.forEach((k) => { t[k] = on; });
+    setState({ toggles: t });
+  }
+  windAll.onchange = () => setKeys(WIND_KEYS, windAll.checked);
+  allToggles.onchange = () => setKeys(ALL_KEYS, allToggles.checked);
   document.querySelectorAll('#views button').forEach((b) => {
     b.onclick = () => setState({ cameraPreset: b.dataset.view, presetSeq: getState().presetSeq + 1 });
   });
@@ -53,6 +65,16 @@ export function initRemote() {
     rotPlay.textContent = s.rotating ? '⏸' : '▶';
     revPlay.textContent = s.revolving ? '⏸' : '▶';
     daySlider.value = Math.round(s.dayOfYear);
+    // 토글 체크박스 ↔ 상태 동기화 (일괄 변경 반영)
+    document.querySelectorAll('#toggles input[data-key]').forEach((c) => {
+      c.checked = s.toggles[c.dataset.key];
+    });
+    const wOn = WIND_KEYS.filter((k) => s.toggles[k]).length;
+    windAll.checked = wOn === WIND_KEYS.length;
+    windAll.indeterminate = wOn > 0 && wOn < WIND_KEYS.length; // 일부만 켜짐 표시
+    const aOn = ALL_KEYS.filter((k) => s.toggles[k]).length;
+    allToggles.checked = aOn === ALL_KEYS.length;
+    allToggles.indeterminate = aOn > 0 && aOn < ALL_KEYS.length;
     const { month, date } = dayToDate(s.dayOfYear);
     const sn = seasonName(s.dayOfYear);
     hud.textContent =

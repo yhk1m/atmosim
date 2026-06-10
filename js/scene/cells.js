@@ -14,7 +14,7 @@ const CELLS = [
 
 // 대류권계면 높이: 적도에서 두껍고(≈17km) 극으로 갈수록 얇아짐(≈8km)
 function topAlt(latDeg) {
-  return 0.26 - 0.19 * (Math.abs(latDeg) / 90);
+  return 0.52 - 0.28 * (Math.abs(latDeg) / 90); // 적도:극 ≈ 17km:8km 비율 유지
 }
 
 function pt(latDeg, alt) {
@@ -36,9 +36,20 @@ function cellCurve(latA, latB) {
 export function createCells() {
   const group = new THREE.Group();
 
-  // 배경 반투명 단면판 (남극~북극, +X쪽 반원)
+  // 배경 반투명 단면판 — 바깥 경계가 대류권계면을 따라감 (적도 두껍고 극 얇음)
+  const shape = new THREE.Shape();
+  for (let la = -90; la <= 90; la += 3) {
+    const r = 1 + topAlt(la) + 0.02;
+    const l = THREE.MathUtils.degToRad(la);
+    const x = r * Math.cos(l), y = r * Math.sin(l);
+    if (la === -90) shape.moveTo(x, y); else shape.lineTo(x, y);
+  }
+  for (let la = 90; la >= -90; la -= 3) { // 안쪽 경계(지표)로 되돌아오기
+    const l = THREE.MathUtils.degToRad(la);
+    shape.lineTo(1.02 * Math.cos(l), 1.02 * Math.sin(l));
+  }
   const disc = new THREE.Mesh(
-    new THREE.RingGeometry(1.02, 1.28, 64, 1, -Math.PI / 2, Math.PI),
+    new THREE.ShapeGeometry(shape),
     new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.06, side: THREE.DoubleSide, depthWrite: false }),
   );
   group.add(disc);
@@ -56,13 +67,13 @@ export function createCells() {
   for (const c of CELLS) {
     const curve = cellCurve(c.lat[0], c.lat[1]);
     const tube = new THREE.Mesh(
-      new THREE.TubeGeometry(curve, 64, 0.006, 6, true),
+      new THREE.TubeGeometry(curve, 64, 0.008, 6, true),
       new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 }),
     );
     group.add(tube);
     for (let k = 0; k < 3; k++) {
       const cone = new THREE.Mesh(
-        new THREE.ConeGeometry(0.02, 0.05, 8),
+        new THREE.ConeGeometry(0.027, 0.066, 8),
         new THREE.MeshBasicMaterial({ color: 0xffee88 }),
       );
       group.add(cone);

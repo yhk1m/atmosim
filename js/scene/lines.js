@@ -44,19 +44,24 @@ function textLabel(text, cls, latDeg, dist, side = 1) {
 
 export function createLines() {
   const group = new THREE.Group();
+  const latLabelObjs = [];
   for (const l of LINES) {
     group.add(latCircle(l.lat));
-    group.add(textLabel(l.name, 'label-lat', l.lat, 1.18, 1));
+    const obj = textLabel(l.name, 'label-lat', l.lat, 1.18, 1);
+    group.add(obj);
+    latLabelObjs.push(obj);
   }
-  const windObjs = []; // 바람 라벨은 해당 바람 토글에 연동
+  const windObjs = []; // 바람 라벨은 해당 바람 토글에 연동 (위도선 토글과 무관)
   for (const w of WIND_LABELS) {
-    const obj = textLabel(w.name, `label-wind ${w.cls}`, w.lat, 1.45, -1);
+    const obj = textLabel(w.name, `label-wind ${w.cls}`, w.lat, 1.2, -1);
     group.add(obj);
     windObjs.push({ obj, key: w.key });
   }
   function update(state) {
-    group.visible = state.toggles.latlines;
-    if (!group.visible) return;
+    const on = state.toggles.latlines;
+    group.visible = on; // WebGL 위도선 원들
+    // r160 CSS2DRenderer는 부모 그룹 visible을 무시 → 라벨 자체 플래그로 제어
+    for (const o of latLabelObjs) o.visible = on;
     for (const { obj, key } of windObjs) obj.visible = state.toggles[key];
   }
   return { group, update };

@@ -29,14 +29,19 @@ export function createPolar() {
   group.add(dayCap, nightCap, dayLabel, nightLabel);
 
   let built = NaN;
+  let lastShow = false; // 토글 재켜짐 시 라벨 복원용
   function update(state) {
-    group.visible = state.toggles.polar;
-    if (!group.visible) return;
+    const on = state.toggles.polar;
+    group.visible = on;
+    // r160 CSS2DRenderer는 부모 그룹 visible을 무시 → 라벨 자체 플래그로 제어
+    dayLabel.visible = nightLabel.visible = on && lastShow;
+    if (!on) return;
     const d = solarDeclination(state.dayOfYear);
     if (Math.abs(d - built) < 0.3) return; // 0.3° 이상 변할 때만 재생성
     built = d;
     const abs = Math.abs(d);
     const show = abs >= 1; // 춘·추분 부근에선 숨김
+    lastShow = show;
     dayCap.visible = nightCap.visible = dayLabel.visible = nightLabel.visible = show;
     if (!show) return;
     const len = THREE.MathUtils.degToRad(abs); // 캡 각폭 = |적위|

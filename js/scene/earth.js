@@ -11,7 +11,7 @@ export function createEarth() {
   const spin = new THREE.Group();   // 자전 — 지구 메시만
   tilted.add(spin);
 
-  const mat = new THREE.MeshLambertMaterial({ color: 0xbbbbbb }); // 채도 약간 낮춤
+  const mat = new THREE.MeshLambertMaterial({ color: 0xffffff }); // 낮 면이 밝게 보이도록 감쇠 없음
   new THREE.TextureLoader().load(
     'assets/earth.jpg',
     (tex) => { tex.colorSpace = THREE.SRGBColorSpace; mat.map = tex; mat.needsUpdate = true; },

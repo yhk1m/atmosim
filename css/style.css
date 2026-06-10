@@ -7,7 +7,10 @@ html, body { height: 100%; overflow: hidden; background: #05080f; font-family: '
 .label { color: #dde; font-size: 13px; text-shadow: 0 0 4px #000; transition: opacity .4s; }
 .label-season { color: #9cf; font-weight: 600; font-size: 15px; }
 .near .label-season { opacity: 0; }
-.far .label-lat, .far .label-wind, .far .label-polar { opacity: 0; }
+.far .label-lat, .far .label-wind, .far .label-polar, .far .label-belt { opacity: 0; }
+.label-belt { font-size: 12px; font-weight: 600; }
+.label-low  { color: #ff9b8a; }
+.label-high { color: #8fb6ff; }
 .label-wind { font-weight: 700; font-size: 12px; }
 .label-trade { color: #ff8866; }
 .label-west  { color: #77aaff; }
@@ -39,7 +42,10 @@ html, body { height: 100%; overflow: hidden; background: #05080f; font-family: '
 #remote.pos-left .grp, #remote.pos-right .grp { width: auto; }
 #remote.pos-left input[type=range], #remote.pos-right input[type=range] { width: 100%; min-width: 0; }
 #remote.pos-left #remoteBar, #remote.pos-right #remoteBar { flex-direction: row; align-items: center; }
-#remote.pos-left #toggles, #remote.pos-right #toggles { align-items: flex-start; }
+#remote.pos-left #toggles, #remote.pos-right #toggles {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; /* 세로 모드: 체크란 2열 */
+}
+#toggles .master { color: #ffd97a; font-weight: 600; }
 
 /* 숨기기 / 다시 표시 */
 #remote.hidden, #remoteShow.hidden { display: none; }
