@@ -7,6 +7,7 @@ import { createSun } from './scene/sun.js';
 import { createOrbit } from './scene/orbit.js';
 import { createEarth } from './scene/earth.js';
 import { createWind } from './scene/wind.js';
+import { createBelts } from './scene/belts.js';
 
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -26,6 +27,8 @@ const earth = createEarth();
 scene.add(earth.system);
 const wind = createWind();
 earth.tilted.add(wind.group);
+const belts = createBelts();
+earth.tilted.add(belts.group);
 
 earth.update(getState());
 camera.position.copy(earth.system.position).add(new THREE.Vector3(0, 1.5, 4));
@@ -64,6 +67,7 @@ function tick(now) {
 
   earth.update(s, dt);
   wind.update(s, dt);
+  belts.update(s);
 
   // 카메라가 지구를 따라가도록 (상대 오프셋 유지)
   const delta = earth.system.position.clone().sub(prevPos);
