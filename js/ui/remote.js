@@ -24,7 +24,7 @@ export function initRemote() {
 
   // 키보드: Space=자전, ←→=날짜 ±1, 1~4=절기
   window.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT') return;
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
     if (e.code === 'Space') { e.preventDefault(); rotPlay.click(); }
     if (e.key === 'ArrowRight') setState({ dayOfYear: (Math.round(getState().dayOfYear) % 365) + 1 });
     if (e.key === 'ArrowLeft') setState({ dayOfYear: ((Math.round(getState().dayOfYear) + 363) % 365) + 1 });
