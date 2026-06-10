@@ -90,5 +90,9 @@
   <p class="help-note">그 밖의 단순화: 궤도는 원(실제 이심률 0.017), 달 궤도 경사 5.1° 생략, 1년=365일 고정, ITCZ(열적도)·바람 띠는 교과 개념을 표현한 도식 모델, 바람 화살표·기압대 띠 굵기는 보기 좋게 과장.</p>
 </div>
 <script type="module" src="js/main.js"></script>
+<script>
+// 항상 최신 버전을 받도록 하는 서비스 워커 (배포 직후 캐시 문제 방지)
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script>
 </body>
 </html>
