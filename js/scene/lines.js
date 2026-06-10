@@ -4,15 +4,15 @@ import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 // key별로 켜고 끌 수 있는 위도선 묶음. 30·60도선은 대기대순환 경계(점선), 라벨은 한 칸 바깥(1.32)에 배치해 겹침 방지.
 const LINES = [
-  { lat: 0,      name: '적도',    key: 'latEq',     dashed: false, opacity: 0.55, labelDist: 1.18 },
-  { lat: 23.44,  name: '북회귀선', key: 'latTropic', dashed: false, opacity: 0.35, labelDist: 1.18 },
-  { lat: -23.44, name: '남회귀선', key: 'latTropic', dashed: false, opacity: 0.35, labelDist: 1.18 },
-  { lat: 30,     name: '30°',     key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
-  { lat: -30,    name: '30°',     key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
-  { lat: 60,     name: '60°',     key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
-  { lat: -60,    name: '60°',     key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
-  { lat: 66.56,  name: '북극권',   key: 'latPolar',  dashed: true,  opacity: 0.35, labelDist: 1.18 },
-  { lat: -66.56, name: '남극권',   key: 'latPolar',  dashed: true,  opacity: 0.35, labelDist: 1.18 },
+  { lat: 0,      name: '적도(0°)',          key: 'latEq',     dashed: false, opacity: 0.55, labelDist: 1.18 },
+  { lat: 23.44,  name: '북회귀선(23.5°N)',  key: 'latTropic', dashed: false, opacity: 0.35, labelDist: 1.18 },
+  { lat: -23.44, name: '남회귀선(23.5°S)',  key: 'latTropic', dashed: false, opacity: 0.35, labelDist: 1.18 },
+  { lat: 30,     name: '30°N',             key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
+  { lat: -30,    name: '30°S',             key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
+  { lat: 60,     name: '60°N',             key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
+  { lat: -60,    name: '60°S',             key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
+  { lat: 66.56,  name: '북극권(66.5°N)',    key: 'latPolar',  dashed: true,  opacity: 0.35, labelDist: 1.18 },
+  { lat: -66.56, name: '남극권(66.5°S)',    key: 'latPolar',  dashed: true,  opacity: 0.35, labelDist: 1.18 },
 ];
 const WIND_LABELS = [
   { lat: 16, name: '북동무역풍', cls: 'label-trade', key: 'trade' },
