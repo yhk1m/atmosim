@@ -47,7 +47,7 @@ html, body { height: 100%; overflow: hidden; background: #05080f; font-family: '
 }
 #toggles .master { color: #ffd97a; font-weight: 600; }
 .label-moon { color: #ccc; font-size: 12px; }
-.label-sun { color: #ffdd66; font-weight: 700; font-size: 15px; }
+.label-sun { color: #ffdd66; font-weight: 700; font-size: 17px; text-shadow: 0 0 8px #b8860b, 0 0 4px #000; }
 #copyright { font-size: 11px; color: #67809a; justify-content: center; }
 #copyright a { color: #7ea7d8; text-decoration: none; }
 #copyright a:hover { text-decoration: underline; }
