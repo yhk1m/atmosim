@@ -30,7 +30,8 @@ export function createEarth() {
   function update(state) {
     spin.rotation.y = state.rotationAngle;
     const a = orbitAngle(state.dayOfYear);
-    system.position.set(ORBIT_R * Math.cos(a), 0, ORBIT_R * Math.sin(a));
+    // -sin: 공전도 자전과 같은 반시계 방향(북쪽에서 볼 때) — 실제와 일치
+    system.position.set(ORBIT_R * Math.cos(a), 0, -ORBIT_R * Math.sin(a));
   }
   return { system, tilted, spin, update };
 }

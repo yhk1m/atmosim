@@ -4,6 +4,9 @@ import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { SEASONS, orbitAngle } from '../astro.js';
 import { ORBIT_R } from '../constants.js';
 
+// 절기별 대략적 날짜 범위 (해마다 하루 이내로 달라짐)
+const SEASON_RANGE = { 춘분: '3/20~21', 하지: '6/21~22', 추분: '9/22~23', 동지: '12/21~22' };
+
 export function createOrbit() {
   const group = new THREE.Group();
 
@@ -25,10 +28,10 @@ export function createOrbit() {
       new THREE.SphereGeometry(0.25, 16, 16),
       new THREE.MeshBasicMaterial({ color: 0x66ccff }),
     );
-    marker.position.set(ORBIT_R * Math.cos(a), 0, ORBIT_R * Math.sin(a));
+    marker.position.set(ORBIT_R * Math.cos(a), 0, -ORBIT_R * Math.sin(a)); // earth.js와 같은 반시계 공전 방향
     const div = document.createElement('div');
     div.className = 'label label-season';
-    div.textContent = name;
+    div.textContent = `${name}(${SEASON_RANGE[name]})`;
     const label = new CSS2DObject(div);
     label.position.set(0, 1.2, 0);
     marker.add(label);

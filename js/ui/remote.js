@@ -21,7 +21,7 @@ export function initRemote() {
 
   // 일괄 선택/해제 (바람 전체 / 전체)
   const WIND_KEYS = ['trade', 'west', 'polarwind'];
-  const ALL_KEYS = ['trade', 'west', 'polarwind', 'belts', 'itcz', 'latlines', 'cells', 'polar'];
+  const ALL_KEYS = ['trade', 'west', 'polarwind', 'belts', 'itcz', 'latEq', 'latTropic', 'lat3060', 'latPolar', 'cells', 'polar'];
   const windAll = $('windAll'), allToggles = $('allToggles');
   function setKeys(keys, on) {
     const t = { ...getState().toggles };
@@ -45,6 +45,10 @@ export function initRemote() {
   $('posBottom').onclick = () => setPos('bottom');
   $('posRight').onclick = () => setPos('right');
   $('remoteHide').onclick = () => { remote.classList.add('hidden'); showBtn.classList.remove('hidden'); };
+  $('fullscreenBtn').onclick = () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen();
+  };
   showBtn.onclick = () => { showBtn.classList.add('hidden'); remote.classList.remove('hidden'); };
   let savedPos = 'bottom';
   try { savedPos = localStorage.getItem('atmosim.remotePos') || 'bottom'; } catch {}

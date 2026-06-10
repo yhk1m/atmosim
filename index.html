@@ -24,6 +24,7 @@
     <button id="posLeft" title="왼쪽에 배치">◀</button>
     <button id="posBottom" title="아래에 배치">▼</button>
     <button id="posRight" title="오른쪽에 배치">▶</button>
+    <button id="fullscreenBtn" title="전체화면 전환">⛶ 전체화면</button>
     <span class="spacer"></span>
     <button id="remoteHide" title="리모콘 숨기기">숨기기 ✕</button>
   </div>
@@ -38,10 +39,10 @@
   <div class="row">
     <span class="grp">날짜</span>
     <input id="daySlider" type="range" min="1" max="365" step="1" value="172">
-    <button class="season" data-day="80">춘분</button>
-    <button class="season" data-day="172">하지</button>
-    <button class="season" data-day="266">추분</button>
-    <button class="season" data-day="355">동지</button>
+    <button class="season" data-day="80">춘분(3/20~21)</button>
+    <button class="season" data-day="172">하지(6/21~22)</button>
+    <button class="season" data-day="266">추분(9/22~23)</button>
+    <button class="season" data-day="355">동지(12/21~22)</button>
   </div>
   <div class="row" id="toggles">
     <label><input type="checkbox" data-key="trade" checked>무역풍</label>
@@ -50,7 +51,10 @@
     <label class="master"><input type="checkbox" id="windAll" checked>바람 전체</label>
     <label><input type="checkbox" data-key="belts" checked>기압대</label>
     <label><input type="checkbox" data-key="itcz" checked>ITCZ</label>
-    <label><input type="checkbox" data-key="latlines" checked>위도선</label>
+    <label><input type="checkbox" data-key="latEq" checked>적도</label>
+    <label><input type="checkbox" data-key="latTropic" checked>회귀선</label>
+    <label><input type="checkbox" data-key="lat3060" checked>30·60도선</label>
+    <label><input type="checkbox" data-key="latPolar" checked>극권</label>
     <label><input type="checkbox" data-key="cells">3세포</label>
     <label><input type="checkbox" data-key="polar" checked>백야·극야</label>
     <label class="master"><input type="checkbox" id="allToggles">전체</label>
@@ -64,6 +68,7 @@
     <button data-view="orbit">궤도 전체</button>
   </div>
   <div class="row"><span id="hud"></span></div>
+  <div class="row" id="copyright">(C) 2026. 양정고등학교 지리교사 김용현 | <a href="https://bgnl.kr" target="_blank" rel="noopener">https://bgnl.kr</a></div>
 </div>
 <button id="remoteShow" class="hidden" title="리모콘 표시">🎮</button>
 <script type="module" src="js/main.js"></script>

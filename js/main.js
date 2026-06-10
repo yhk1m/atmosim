@@ -9,6 +9,7 @@ import { createEarth } from './scene/earth.js';
 import { createWind } from './scene/wind.js';
 import { createBelts } from './scene/belts.js';
 import { createItcz } from './scene/itcz.js';
+import { createMoon } from './scene/moon.js';
 import { createLines } from './scene/lines.js';
 import { createCells } from './scene/cells.js';
 import { createPolar } from './scene/polar.js';
@@ -36,6 +37,8 @@ const belts = createBelts();
 earth.tilted.add(belts.group);
 const itcz = createItcz();
 earth.spin.add(itcz.group); // 열적도는 대륙(지표)에 고정 — 자전 그룹에 부착
+const moon = createMoon();
+earth.system.add(moon.group); // 달 궤도는 황도면 기준 (기울지 않은 그룹)
 const lines = createLines();
 earth.tilted.add(lines.group);
 const cells = createCells();
@@ -82,6 +85,7 @@ function tick(now) {
   wind.update(s, dt);
   belts.update(s);
   itcz.update(s);
+  moon.update(s);
   lines.update(s);
   cells.update(s, dt);
   polar.update(s);

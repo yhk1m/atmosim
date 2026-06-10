@@ -2,10 +2,17 @@
 import * as THREE from 'three';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
+// key별로 켜고 끌 수 있는 위도선 묶음. 30·60도선은 대기대순환 경계(점선), 라벨은 한 칸 바깥(1.32)에 배치해 겹침 방지.
 const LINES = [
-  { lat: 0, name: '적도' },
-  { lat: 23.44, name: '북회귀선' }, { lat: -23.44, name: '남회귀선' },
-  { lat: 66.56, name: '북극권' }, { lat: -66.56, name: '남극권' },
+  { lat: 0,      name: '적도',    key: 'latEq',     dashed: false, opacity: 0.55, labelDist: 1.18 },
+  { lat: 23.44,  name: '북회귀선', key: 'latTropic', dashed: false, opacity: 0.35, labelDist: 1.18 },
+  { lat: -23.44, name: '남회귀선', key: 'latTropic', dashed: false, opacity: 0.35, labelDist: 1.18 },
+  { lat: 30,     name: '30°',     key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
+  { lat: -30,    name: '30°',     key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
+  { lat: 60,     name: '60°',     key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
+  { lat: -60,    name: '60°',     key: 'lat3060',   dashed: true,  opacity: 0.35, labelDist: 1.32 },
+  { lat: 66.56,  name: '북극권',   key: 'latPolar',  dashed: true,  opacity: 0.35, labelDist: 1.18 },
+  { lat: -66.56, name: '남극권',   key: 'latPolar',  dashed: true,  opacity: 0.35, labelDist: 1.18 },
 ];
 const WIND_LABELS = [
   { lat: 16, name: '북동무역풍', cls: 'label-trade', key: 'trade' },
@@ -17,7 +24,7 @@ const WIND_LABELS = [
 ];
 const R = 1.015;
 
-function latCircle(latDeg) {
+function latCircle(latDeg, dashed, opacity) {
   const lat = THREE.MathUtils.degToRad(latDeg);
   const r = R * Math.cos(lat), y = R * Math.sin(lat);
   const pts = [];
@@ -25,10 +32,12 @@ function latCircle(latDeg) {
     const a = (i / 96) * Math.PI * 2;
     pts.push(new THREE.Vector3(r * Math.cos(a), y, r * Math.sin(a)));
   }
-  return new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints(pts),
-    new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35 }),
-  );
+  const mat = dashed
+    ? new THREE.LineDashedMaterial({ color: 0xffffff, transparent: true, opacity, dashSize: 0.05, gapSize: 0.035 })
+    : new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity });
+  const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat);
+  if (dashed) line.computeLineDistances();
+  return line;
 }
 
 // side: +1 = +X쪽(위도선 라벨), -1 = 반대편(바람 라벨) — 한쪽 쏠림 방지
@@ -44,12 +53,12 @@ function textLabel(text, cls, latDeg, dist, side = 1) {
 
 export function createLines() {
   const group = new THREE.Group();
-  const latLabelObjs = [];
+  const latObjs = [];
   for (const l of LINES) {
-    group.add(latCircle(l.lat));
-    const obj = textLabel(l.name, 'label-lat', l.lat, 1.18, 1);
-    group.add(obj);
-    latLabelObjs.push(obj);
+    const line = latCircle(l.lat, l.dashed, l.opacity);
+    const label = textLabel(l.name, 'label-lat', l.lat, l.labelDist, 1);
+    group.add(line, label);
+    latObjs.push({ line, label, key: l.key });
   }
   const windObjs = []; // 바람 라벨은 해당 바람 토글에 연동 (위도선 토글과 무관)
   for (const w of WIND_LABELS) {
@@ -58,10 +67,11 @@ export function createLines() {
     windObjs.push({ obj, key: w.key });
   }
   function update(state) {
-    const on = state.toggles.latlines;
-    group.visible = on; // WebGL 위도선 원들
     // r160 CSS2DRenderer는 부모 그룹 visible을 무시 → 라벨 자체 플래그로 제어
-    for (const o of latLabelObjs) o.visible = on;
+    for (const { line, label, key } of latObjs) {
+      line.visible = state.toggles[key];
+      label.visible = state.toggles[key];
+    }
     for (const { obj, key } of windObjs) obj.visible = state.toggles[key];
   }
   return { group, update };

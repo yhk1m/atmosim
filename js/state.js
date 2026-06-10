@@ -7,7 +7,12 @@ const state = {
   revolving: false,
   revolutionSpeed: 1,
   rotationAngle: 0,      // 자전 누적각(rad) — 렌더 루프가 직접 갱신
-  toggles: { trade: true, west: true, polarwind: true, belts: true, itcz: true, latlines: true, cells: false, polar: true },
+  toggles: {
+    trade: true, west: true, polarwind: true,
+    belts: true, itcz: true,
+    latEq: true, latTropic: true, lat3060: true, latPolar: true,
+    cells: false, polar: true,
+  },
   cameraPreset: 'default',
   presetSeq: 0,          // 같은 프리셋 재클릭도 적용되도록 증가 카운터
 };
