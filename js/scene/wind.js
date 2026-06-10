@@ -63,6 +63,7 @@ export function createWind() {
     const shiftBase = itczLat(state.dayOfYear); // 바람 띠 전체가 ITCZ 따라 이동(극 쪽일수록 약하게)
     for (const ar of arrows) {
       ar.lon += ar.band.ew * FLOW * dt;
+      ar.lon = ((ar.lon % 360) + 360) % 360; // 경도 누적 방지
       const shift = shiftBase * (1 - Math.abs(ar.lat) / 90);
       place(ar.mesh, ar.lat + shift, ar.lon, ar.band.ew, ar.band.ns);
     }
