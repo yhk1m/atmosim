@@ -41,6 +41,10 @@ export function createMoon() {
   moon.add(label);
 
   function update(state) {
+    const on = state.toggles.moon;
+    group.visible = on;
+    label.visible = on; // r160 CSS2DRenderer는 부모 그룹 visible을 무시 → 라벨 자체 플래그로 제어
+    if (!on) return;
     // 지구 공전·자전과 같은 반시계(북쪽에서 볼 때) 방향, 약 27.3일 주기
     pivot.rotation.y = (2 * Math.PI * state.dayOfYear) / MOON_PERIOD;
   }

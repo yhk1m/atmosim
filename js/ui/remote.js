@@ -21,14 +21,16 @@ export function initRemote() {
 
   // 일괄 선택/해제 (바람 전체 / 전체)
   const WIND_KEYS = ['trade', 'west', 'polarwind'];
-  const ALL_KEYS = ['trade', 'west', 'polarwind', 'belts', 'itcz', 'latEq', 'latTropic', 'lat3060', 'latPolar', 'cells', 'polar'];
-  const windAll = $('windAll'), allToggles = $('allToggles');
+  const LAT_KEYS = ['latEq', 'latTropic', 'lat3060', 'latPolar'];
+  const ALL_KEYS = [...WIND_KEYS, 'belts', 'itcz', ...LAT_KEYS, 'cells', 'polar', 'moon'];
+  const windAll = $('windAll'), latAll = $('latAll'), allToggles = $('allToggles');
   function setKeys(keys, on) {
     const t = { ...getState().toggles };
     keys.forEach((k) => { t[k] = on; });
     setState({ toggles: t });
   }
   windAll.onchange = () => setKeys(WIND_KEYS, windAll.checked);
+  latAll.onchange = () => setKeys(LAT_KEYS, latAll.checked);
   allToggles.onchange = () => setKeys(ALL_KEYS, allToggles.checked);
   document.querySelectorAll('#views button').forEach((b) => {
     b.onclick = () => setState({ cameraPreset: b.dataset.view, presetSeq: getState().presetSeq + 1 });
@@ -76,6 +78,9 @@ export function initRemote() {
     const wOn = WIND_KEYS.filter((k) => s.toggles[k]).length;
     windAll.checked = wOn === WIND_KEYS.length;
     windAll.indeterminate = wOn > 0 && wOn < WIND_KEYS.length; // 일부만 켜짐 표시
+    const lOn = LAT_KEYS.filter((k) => s.toggles[k]).length;
+    latAll.checked = lOn === LAT_KEYS.length;
+    latAll.indeterminate = lOn > 0 && lOn < LAT_KEYS.length;
     const aOn = ALL_KEYS.filter((k) => s.toggles[k]).length;
     allToggles.checked = aOn === ALL_KEYS.length;
     allToggles.indeterminate = aOn > 0 && aOn < ALL_KEYS.length;
