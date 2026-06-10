@@ -1,11 +1,11 @@
 // © 2026 김용현
-// 달 — 도식적 축척: 거리는 실제(60R⊕) 대신 2.0, 반지름 비 0.27은 실제와 같음.
+// 달 — 도식적 축척: 거리는 실제(60R⊕) 대신 4.0, 반지름 비 0.27은 실제와 같음.
 // earth.system(황도면 기준, 기울지 않음)에 부착. 조명이 태양 광원이라 위상(보름/그믐)도 자연 표현됨.
 import * as THREE from 'three';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 const MOON_R = 0.27;
-const MOON_DIST = 2.0;
+const MOON_DIST = 4.0;
 const MOON_PERIOD = 27.32; // 항성월(일)
 
 export function createMoon() {

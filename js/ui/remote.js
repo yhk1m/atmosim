@@ -51,6 +51,11 @@ export function initRemote() {
     if (document.fullscreenElement) document.exitFullscreen();
     else document.documentElement.requestFullscreen();
   };
+
+  // 축척 안내 패널
+  const helpPanel = $('helpPanel');
+  $('helpBtn').onclick = () => helpPanel.classList.toggle('hidden');
+  $('helpClose').onclick = () => helpPanel.classList.add('hidden');
   showBtn.onclick = () => { showBtn.classList.add('hidden'); remote.classList.remove('hidden'); };
   let savedPos = 'bottom';
   try { savedPos = localStorage.getItem('atmosim.remotePos') || 'bottom'; } catch {}

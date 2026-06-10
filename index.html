@@ -73,6 +73,22 @@
   <div class="row" id="copyright">Copyright 2026. 양정고등학교 지리교사 김용현 | <a href="https://bgnl.kr" target="_blank" rel="noopener">https://bgnl.kr</a></div>
 </div>
 <button id="remoteShow" class="hidden" title="리모콘 표시">🎮</button>
+<button id="helpBtn" title="축척 안내">?</button>
+<div id="helpPanel" class="hidden">
+  <div class="help-head">📏 축척 안내 <button id="helpClose" title="닫기">✕</button></div>
+  <p class="help-intro">이 시뮬레이터는 한 화면에 담기 위해 <b>도식적 축척</b>을 사용합니다. (단위: 지구 반지름 R)</p>
+  <table>
+    <tr><th>항목</th><th>시뮬레이션</th><th>실제</th><th>차이</th></tr>
+    <tr><td>달 크기</td><td>지구의 0.27배</td><td>0.27배</td><td><b>실제와 동일</b> ✓</td></tr>
+    <tr><td>달 거리</td><td>4 R</td><td>약 60 R (38만 km)</td><td>15배 가깝게</td></tr>
+    <tr><td>태양 크기</td><td>지구의 2.5배</td><td>109배</td><td>44배 작게</td></tr>
+    <tr><td>태양 거리</td><td>30 R</td><td>약 23,500 R (1억 5천만 km)</td><td>780배 가깝게</td></tr>
+    <tr><td>대기 두께<br>(3세포 단면)</td><td>적도에서 0.5 R</td><td>대류권 약 17 km<br>(0.003 R)</td><td>약 190배 과장<br>적도:극 = 17:8km 비율은 실제</td></tr>
+    <tr><td>자전:공전 속도비</td><td>1 : 20 (1배속 기준)</td><td>1 : 365</td><td>공전을 빠르게</td></tr>
+  </table>
+  <p class="help-note">💡 실감 비유: 지구가 지름 2cm 구슬이라면, 실제 축척으로 달은 <b>지름 5.5mm·60cm 거리</b>, 태양은 <b>지름 2.2m·235m 거리</b>에 있어야 합니다.</p>
+  <p class="help-note">그 밖의 단순화: 궤도는 원(실제 이심률 0.017), 달 궤도 경사 5.1° 생략, 1년=365일 고정, ITCZ(열적도)·바람 띠는 교과 개념을 표현한 도식 모델, 바람 화살표·기압대 띠 굵기는 보기 좋게 과장.</p>
+</div>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>
