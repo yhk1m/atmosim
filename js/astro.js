@@ -26,6 +26,7 @@ export function dayToDate(day) {
     if (n < MONTH_DAYS[m]) return { month: m + 1, date: n + 1 };
     n -= MONTH_DAYS[m];
   }
+  return { month: 12, date: 31 }; // 방어적 폴백 (루프가 끝나면 연말)
 }
 
 export function seasonName(day) {

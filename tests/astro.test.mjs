@@ -14,4 +14,7 @@ assert.deepStrictEqual(dayToDate(266), { month: 9, date: 23 });
 assert.deepStrictEqual(dayToDate(365), { month: 12, date: 31 });
 assert.equal(seasonName(172), '하지');
 assert.equal(seasonName(100), '');
+assert.deepStrictEqual(dayToDate(0), { month: 12, date: 31 }, '0일 랩어라운드');
+assert.deepStrictEqual(dayToDate(366), { month: 1, date: 1 }, '366일 랩어라운드');
+assert.deepStrictEqual(dayToDate(172.4), { month: 6, date: 21 }, '소수 날짜 반올림');
 console.log('✓ astro.test 통과');
