@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
-import { getState, setState } from './state.js';
+import { getState, setState, subscribe } from './state.js';
 import { createSun } from './scene/sun.js';
 import { createOrbit } from './scene/orbit.js';
 import { createEarth } from './scene/earth.js';
@@ -11,6 +11,7 @@ import { createBelts } from './scene/belts.js';
 import { createLines } from './scene/lines.js';
 import { createCells } from './scene/cells.js';
 import { createPolar } from './scene/polar.js';
+import { initRemote } from './ui/remote.js';
 
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -97,4 +98,21 @@ function tick(now) {
   labelRenderer.render(scene, camera);
   requestAnimationFrame(tick);
 }
+
+// 카메라 프리셋 (지구 기준 상대 오프셋)
+const VIEW_OFFSETS = {
+  default: new THREE.Vector3(0, 1.5, 4),
+  north: new THREE.Vector3(0, 5, 0.01),
+  south: new THREE.Vector3(0, -5, 0.01),
+  equator: new THREE.Vector3(0, 0, 3.5),
+  orbit: new THREE.Vector3(0, 45, 60),
+};
+let appliedSeq = 0;
+subscribe((s) => {
+  if (s.presetSeq !== appliedSeq) {
+    appliedSeq = s.presetSeq;
+    camera.position.copy(earth.system.position).add(VIEW_OFFSETS[s.cameraPreset]);
+  }
+});
+initRemote();
 requestAnimationFrame(tick);
