@@ -25,3 +25,25 @@ html, body { height: 100%; overflow: hidden; background: #05080f; font-family: '
 #daySlider { flex: 1; min-width: 180px; }
 #remote label { font-size: 13px; display: flex; gap: 4px; align-items: center; cursor: pointer; }
 #hud { font-size: 13px; color: #ffd97a; }
+.spacer { flex: 1; }
+#remoteBar button { padding: 3px 8px; font-size: 12px; }
+
+/* 좌/우 배치: 세로로 긴 패널 */
+#remote.pos-left, #remote.pos-right {
+  top: 12px; bottom: 12px; transform: none;
+  min-width: 0; width: 248px; overflow-y: auto;
+}
+#remote.pos-left  { left: 12px; right: auto; }
+#remote.pos-right { right: 12px; left: auto; }
+#remote.pos-left .row, #remote.pos-right .row { flex-direction: column; align-items: stretch; }
+#remote.pos-left .grp, #remote.pos-right .grp { width: auto; }
+#remote.pos-left input[type=range], #remote.pos-right input[type=range] { width: 100%; min-width: 0; }
+#remote.pos-left #remoteBar, #remote.pos-right #remoteBar { flex-direction: row; align-items: center; }
+#remote.pos-left #toggles, #remote.pos-right #toggles { align-items: flex-start; }
+
+/* 숨기기 / 다시 표시 */
+#remote.hidden, #remoteShow.hidden { display: none; }
+#remoteShow { position: fixed; right: 16px; bottom: 16px; z-index: 10; font-size: 20px;
+  background: rgba(10,16,30,.85); border: 1px solid #34507a; border-radius: 12px;
+  padding: 8px 12px; color: #cde; cursor: pointer; }
+#remoteShow:hover { background: #28405f; }

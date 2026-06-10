@@ -6,11 +6,16 @@ import * as THREE from 'three';
 const CELLS = [
   { lat: [0, 30], dirSign: 1 },    // 해들리(북)
   { lat: [30, 60], dirSign: -1 },  // 페렐(북)
-  { lat: [60, 90], dirSign: 1 },   // 극세포(북)
+  { lat: [60, 85], dirSign: 1 },   // 극세포(북) — 85°에서 하강 (극점 수렴 없음)
   { lat: [0, -30], dirSign: 1 },   // 해들리(남)
   { lat: [-30, -60], dirSign: -1 },// 페렐(남)
-  { lat: [-60, -90], dirSign: 1 }, // 극세포(남)
+  { lat: [-60, -85], dirSign: 1 }, // 극세포(남)
 ];
+
+// 대류권계면 높이: 적도에서 두껍고(≈17km) 극으로 갈수록 얇아짐(≈8km)
+function topAlt(latDeg) {
+  return 0.26 - 0.19 * (Math.abs(latDeg) / 90);
+}
 
 function pt(latDeg, alt) {
   const l = THREE.MathUtils.degToRad(latDeg);
@@ -20,8 +25,11 @@ function pt(latDeg, alt) {
 function cellCurve(latA, latB) {
   const pts = [];
   const seg = 16;
-  for (let i = 0; i <= seg; i++) pts.push(pt(latA + (latB - latA) * (i / seg), 0.2));  // 고공
-  for (let i = 0; i <= seg; i++) pts.push(pt(latB + (latA - latB) * (i / seg), 0.04)); // 지표
+  for (let i = 0; i <= seg; i++) { // 고공 — 위도별 대류권계면 높이를 따라감
+    const la = latA + (latB - latA) * (i / seg);
+    pts.push(pt(la, topAlt(la) * 0.85));
+  }
+  for (let i = 0; i <= seg; i++) pts.push(pt(latB + (latA - latB) * (i / seg), 0.03)); // 지표
   return new THREE.CatmullRomCurve3(pts, true);
 }
 
@@ -34,6 +42,15 @@ export function createCells() {
     new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.06, side: THREE.DoubleSide, depthWrite: false }),
   );
   group.add(disc);
+
+  // 대류권계면 경계선 — 적도에서 높고 극에서 낮은 곡선
+  const tropoPts = [];
+  for (let la = -90; la <= 90; la += 3) tropoPts.push(pt(la, topAlt(la)));
+  const tropo = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(tropoPts),
+    new THREE.LineBasicMaterial({ color: 0x88ccff, transparent: true, opacity: 0.5 }),
+  );
+  group.add(tropo);
 
   const movers = [];
   for (const c of CELLS) {

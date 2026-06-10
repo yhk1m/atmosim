@@ -22,6 +22,22 @@ export function initRemote() {
     b.onclick = () => setState({ cameraPreset: b.dataset.view, presetSeq: getState().presetSeq + 1 });
   });
 
+  // 리모콘 위치 (하단/좌/우) + 숨기기 — localStorage에 기억
+  const remote = $('remote'), showBtn = $('remoteShow');
+  function setPos(pos) {
+    remote.classList.remove('pos-left', 'pos-right');
+    if (pos === 'left' || pos === 'right') remote.classList.add(`pos-${pos}`);
+    try { localStorage.setItem('atmosim.remotePos', pos); } catch {}
+  }
+  $('posLeft').onclick = () => setPos('left');
+  $('posBottom').onclick = () => setPos('bottom');
+  $('posRight').onclick = () => setPos('right');
+  $('remoteHide').onclick = () => { remote.classList.add('hidden'); showBtn.classList.remove('hidden'); };
+  showBtn.onclick = () => { showBtn.classList.add('hidden'); remote.classList.remove('hidden'); };
+  let savedPos = 'bottom';
+  try { savedPos = localStorage.getItem('atmosim.remotePos') || 'bottom'; } catch {}
+  setPos(savedPos);
+
   // 키보드: Space=자전, ←→=날짜 ±1, 1~4=절기
   window.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
