@@ -1,0 +1,58 @@
+<!-- © 2026 김용현 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대기대순환 시뮬레이터</title>
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="labels"></div>
+<div id="remote">
+  <div class="row">
+    <span class="grp">자전</span>
+    <button id="rotPlay">⏸</button>
+    <input id="rotSpeed" type="range" min="0.1" max="5" step="0.1" value="1">
+    <span class="grp">공전</span>
+    <button id="revPlay">▶</button>
+    <input id="revSpeed" type="range" min="0.1" max="5" step="0.1" value="1">
+  </div>
+  <div class="row">
+    <span class="grp">날짜</span>
+    <input id="daySlider" type="range" min="1" max="365" step="1" value="172">
+    <button class="season" data-day="80">춘분</button>
+    <button class="season" data-day="172">하지</button>
+    <button class="season" data-day="266">추분</button>
+    <button class="season" data-day="355">동지</button>
+  </div>
+  <div class="row" id="toggles">
+    <label><input type="checkbox" data-key="wind" checked>바람</label>
+    <label><input type="checkbox" data-key="belts" checked>기압대</label>
+    <label><input type="checkbox" data-key="itcz" checked>ITCZ</label>
+    <label><input type="checkbox" data-key="latlines" checked>위도선</label>
+    <label><input type="checkbox" data-key="cells">3세포</label>
+    <label><input type="checkbox" data-key="polar" checked>백야·극야</label>
+  </div>
+  <div class="row" id="views">
+    <span class="grp">시점</span>
+    <button data-view="default">기본</button>
+    <button data-view="north">북극 위</button>
+    <button data-view="south">남극 위</button>
+    <button data-view="equator">적도</button>
+    <button data-view="orbit">궤도 전체</button>
+  </div>
+  <div class="row"><span id="hud"></span></div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

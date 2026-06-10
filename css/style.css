@@ -1,0 +1,27 @@
+/* © 2026 김용현 */
+* { margin: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; background: #05080f; font-family: 'Segoe UI', 'Malgun Gothic', sans-serif; }
+#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+#labels { position: fixed; inset: 0; pointer-events: none; }
+#labels * { pointer-events: none; }
+.label { color: #dde; font-size: 13px; text-shadow: 0 0 4px #000; transition: opacity .4s; }
+.label-season { color: #9cf; font-weight: 600; font-size: 15px; }
+.near .label-season { opacity: 0; }
+.far .label-lat, .far .label-wind, .far .label-polar { opacity: 0; }
+.label-wind { font-weight: 700; font-size: 12px; }
+.label-trade { color: #ff8866; }
+.label-west  { color: #77aaff; }
+.label-polarwind { color: #cc99ff; }
+.label-polar { color: #ffe9a0; font-weight: 700; }
+#remote { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%);
+  background: rgba(10,16,30,.82); border: 1px solid #2a3a55; border-radius: 14px;
+  padding: 10px 16px; color: #cde; backdrop-filter: blur(8px); min-width: 740px; z-index: 10; }
+#remote .row { display: flex; align-items: center; gap: 8px; padding: 3px 0; flex-wrap: wrap; }
+#remote .grp { font-size: 12px; color: #89a; width: 34px; flex-shrink: 0; }
+#remote button { background: #1c2940; color: #cde; border: 1px solid #34507a; border-radius: 8px;
+  padding: 4px 10px; cursor: pointer; font-size: 13px; }
+#remote button:hover { background: #28405f; }
+#remote input[type=range] { accent-color: #4a90d9; }
+#daySlider { flex: 1; min-width: 180px; }
+#remote label { font-size: 13px; display: flex; gap: 4px; align-items: center; cursor: pointer; }
+#hud { font-size: 13px; color: #ffd97a; }
