@@ -28,7 +28,7 @@
     <span class="spacer"></span>
     <button id="remoteHide" title="리모콘 숨기기">숨기기 ✕</button>
   </div>
-  <div class="row">
+  <div class="row" id="motion">
     <span class="grp">자전</span>
     <button id="rotPlay">⏸</button>
     <input id="rotSpeed" type="range" min="0.1" max="5" step="0.1" value="1">
@@ -36,13 +36,13 @@
     <button id="revPlay">▶</button>
     <input id="revSpeed" type="range" min="0.1" max="5" step="0.1" value="1">
   </div>
-  <div class="row">
+  <div class="row" id="dateRow">
     <span class="grp">날짜</span>
     <input id="daySlider" type="range" min="1" max="365" step="1" value="172">
-    <button class="season" data-day="80">춘분(3/20~21)</button>
-    <button class="season" data-day="172">하지(6/21~22)</button>
-    <button class="season" data-day="266">추분(9/22~23)</button>
-    <button class="season" data-day="355">동지(12/21~22)</button>
+    <button class="season" data-day="80">춘분<span class="sdate">(3/20~21)</span></button>
+    <button class="season" data-day="172">하지<span class="sdate">(6/21~22)</span></button>
+    <button class="season" data-day="266">추분<span class="sdate">(9/22~23)</span></button>
+    <button class="season" data-day="355">동지<span class="sdate">(12/21~22)</span></button>
   </div>
   <div class="row" id="toggles">
     <label><input type="checkbox" data-key="trade" checked>무역풍</label>
@@ -71,7 +71,7 @@
     <button data-view="orbit">궤도 전체</button>
     <button data-view="sun">태양 중심</button>
   </div>
-  <div class="row"><span id="hud"></span></div>
+  <div class="row" id="hudRow"><span id="hud"></span></div>
   <div class="row" id="copyright">Ⓒ 2026. 양정고등학교 지리교사 김용현 | <a href="https://bgnl.kr" target="_blank" rel="noopener">https://bgnl.kr</a></div>
 </div>
 <button id="remoteShow" class="hidden" title="리모콘 표시">🎮</button>

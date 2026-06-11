@@ -48,21 +48,48 @@ html, body { height: 100%; overflow: hidden; background: #05080f; font-family: '
 }
 #toggles .master { color: #ffd97a; font-weight: 600; }
 
-/* 모바일: 리모콘을 화면 하단에 전체 폭으로 고정 (좌/우 배치 무시) */
+/* 모바일: 리모콘을 화면 하단에 전체 폭으로 고정, 섹션별 그리드 정리 (좌/우 배치 무시) */
 @media (max-width: 768px) {
   #remote, #remote.pos-left, #remote.pos-right {
     top: auto; bottom: 0; left: 0; right: 0; transform: none;
-    width: 100%; min-width: 0; max-height: 52vh; overflow-y: auto;
-    border-radius: 14px 14px 0 0;
-    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    width: 100%; min-width: 0; max-height: 55vh; overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 16px 16px 0 0;
+    padding: 6px 12px calc(10px + env(safe-area-inset-bottom));
   }
   #remote.pos-left .row, #remote.pos-right .row { flex-direction: row; align-items: center; }
   #remote.pos-left .grp, #remote.pos-right .grp { width: 34px; }
-  #remote.pos-left #toggles, #remote.pos-right #toggles { display: flex; }
-  #remoteBar .grp, #posLeft, #posBottom, #posRight { display: none; } /* 위치 선택 버튼 숨김 */
-  #remote button { padding: 5px 9px; font-size: 12px; }
+  #remote .row { padding: 7px 0; }
+  #remote .row + .row { border-top: 1px solid rgba(64, 90, 134, .3); } /* 섹션 구분선 */
+  #remote button { padding: 6px 8px; font-size: 12px; }
   #remote label { font-size: 12px; }
-  #daySlider { min-width: 120px; }
+
+  /* 상단 바: 위치 버튼 숨기고 전체화면/숨기기 반반 */
+  #remoteBar .grp, #posLeft, #posBottom, #posRight, #remoteBar .spacer { display: none; }
+  #remoteBar button { flex: 1; }
+
+  /* 자전·공전: [라벨|버튼|슬라이더] 2행 그리드 */
+  #motion { display: grid; grid-template-columns: 34px auto 1fr; gap: 6px 8px; align-items: center; }
+  #motion input[type=range] { width: 100%; min-width: 0; }
+
+  /* 날짜: 슬라이더 전체 폭 + 절기 4등분 (괄호 날짜는 생략 — HUD에 표시됨) */
+  #dateRow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px 6px; }
+  #dateRow .grp { display: none; }
+  #daySlider { grid-column: 1 / -1; width: 100%; min-width: 0; }
+  .season .sdate { display: none; }
+
+  /* 토글: 3열 그리드 */
+  #toggles, #remote.pos-left #toggles, #remote.pos-right #toggles {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 6px;
+  }
+
+  /* 시점: 3열 그리드 */
+  #views { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  #views .grp { display: none; }
+
+  #hudRow { justify-content: center; }
+  #hud { font-size: 12px; }
+  #copyright { font-size: 10px; }
   #remoteShow { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
 }
 .label-moon { color: #ccc; font-size: 12px; }
