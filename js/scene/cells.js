@@ -6,10 +6,10 @@ import * as THREE from 'three';
 const CELLS = [
   { lat: [0, 30], dirSign: 1 },    // 해들리(북)
   { lat: [30, 60], dirSign: -1 },  // 페렐(북)
-  { lat: [60, 85], dirSign: 1 },   // 극세포(북) — 85°에서 하강 (극점 수렴 없음)
+  { lat: [60, 90], dirSign: 1, taper: 1 },   // 극세포(북) — 60°부터 위로 볼록한 호로 자전축까지 하강
   { lat: [0, -30], dirSign: 1 },   // 해들리(남)
   { lat: [-30, -60], dirSign: -1 },// 페렐(남)
-  { lat: [-60, -85], dirSign: 1 }, // 극세포(남)
+  { lat: [-60, -90], dirSign: 1, taper: 1 }, // 극세포(남)
 ];
 
 // 대류권계면 높이: 적도에서 두껍고(≈17km) 극으로 갈수록 얇아짐(≈8km)
@@ -22,14 +22,22 @@ function pt(latDeg, alt) {
   return new THREE.Vector3((1 + alt) * Math.cos(l), (1 + alt) * Math.sin(l), 0);
 }
 
-function cellCurve(latA, latB) {
+// taper: 0~1 — 끝(latB) 쪽 해당 비율 구간에서 고공 경로를 지표까지 비스듬히 내림 (극세포의 경사 하강)
+function cellCurve(latA, latB, taper = 0) {
   const pts = [];
-  const seg = 16;
+  const seg = 32;
   for (let i = 0; i <= seg; i++) { // 고공 — 위도별 대류권계면 높이를 따라감
-    const la = latA + (latB - latA) * (i / seg);
-    pts.push(pt(la, topAlt(la) * 0.85));
+    const f = i / seg;
+    const la = latA + (latB - latA) * f;
+    let alt = topAlt(la) * 0.85;
+    if (taper > 0 && f > 1 - taper) {
+      const k = (f - (1 - taper)) / taper;
+      alt = 0.03 + (alt - 0.03) * Math.cos((k * Math.PI) / 2); // 위로 볼록한 호 — 지표 높이(0.03)까지
+    }
+    pts.push(pt(la, alt));
   }
-  for (let i = 0; i <= seg; i++) pts.push(pt(latB + (latA - latB) * (i / seg), 0.03)); // 지표
+  // 지표 귀환 — taper 시 첫 점이 고공 경로 끝과 겹치므로 한 칸 건너뜀
+  for (let i = taper > 0 ? 1 : 0; i <= seg; i++) pts.push(pt(latB + (latA - latB) * (i / seg), 0.03));
   return new THREE.CatmullRomCurve3(pts, true);
 }
 
@@ -65,7 +73,7 @@ export function createCells() {
 
   const movers = [];
   for (const c of CELLS) {
-    const curve = cellCurve(c.lat[0], c.lat[1]);
+    const curve = cellCurve(c.lat[0], c.lat[1], c.taper || 0);
     const tube = new THREE.Mesh(
       new THREE.TubeGeometry(curve, 64, 0.008, 6, true),
       new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 }),

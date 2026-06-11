@@ -67,6 +67,7 @@ resize();
 const ROT_RATE = (2 * Math.PI) / 6; // 1배속: 6초에 1자전
 const REV_RATE = 365 / 120;         // 1배속: 120초에 1공전 (일/초)
 const prevPos = earth.system.position.clone();
+let followSun = false; // 태양 중심 시점: 카메라가 지구를 따라가지 않고 태양(원점)을 바라봄
 let last = performance.now();
 
 function tick(now) {
@@ -90,10 +91,12 @@ function tick(now) {
   cells.update(s, dt);
   polar.update(s);
 
-  // 카메라가 지구를 따라가도록 (상대 오프셋 유지)
-  const delta = earth.system.position.clone().sub(prevPos);
-  camera.position.add(delta);
-  controls.target.copy(earth.system.position);
+  // 카메라가 지구를 따라가도록 (상대 오프셋 유지) — 태양 중심 시점은 고정
+  if (!followSun) {
+    const delta = earth.system.position.clone().sub(prevPos);
+    camera.position.add(delta);
+    controls.target.copy(earth.system.position);
+  }
   prevPos.copy(earth.system.position);
   controls.update();
 
@@ -101,25 +104,33 @@ function tick(now) {
   const dist = camera.position.distanceTo(controls.target);
   document.body.classList.toggle('near', dist < 10);
   document.body.classList.toggle('far', dist >= 10);
+  document.body.classList.toggle('no-labels', !s.toggles.labels);
 
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);
   requestAnimationFrame(tick);
 }
 
-// 카메라 프리셋 (지구 기준 상대 오프셋)
+// 카메라 프리셋 (지구 기준 상대 오프셋 — 'sun'만 태양(원점) 기준 절대 위치)
 const VIEW_OFFSETS = {
   default: new THREE.Vector3(0, 1.5, 4),
   north: new THREE.Vector3(0, 5, 0.01),
   south: new THREE.Vector3(0, -5, 0.01),
   equator: new THREE.Vector3(0, 0, 3.5),
   orbit: new THREE.Vector3(0, 45, 60),
+  sun: new THREE.Vector3(0, 45, 55),
 };
 let appliedSeq = 0;
 subscribe((s) => {
   if (s.presetSeq !== appliedSeq) {
     appliedSeq = s.presetSeq;
-    camera.position.copy(earth.system.position).add(VIEW_OFFSETS[s.cameraPreset]);
+    followSun = s.cameraPreset === 'sun';
+    if (followSun) {
+      camera.position.copy(VIEW_OFFSETS.sun);
+      controls.target.set(0, 0, 0);
+    } else {
+      camera.position.copy(earth.system.position).add(VIEW_OFFSETS[s.cameraPreset]);
+    }
   }
 });
 initRemote();

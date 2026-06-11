@@ -3,6 +3,7 @@
 html, body { height: 100%; overflow: hidden; background: #05080f; font-family: 'Segoe UI', 'Malgun Gothic', sans-serif; }
 #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 #labels { position: fixed; inset: 0; pointer-events: none; }
+.no-labels #labels { display: none; }
 #labels * { pointer-events: none; }
 .label { color: #dde; font-size: 13px; text-shadow: 0 0 4px #000; transition: opacity .4s; }
 .label-season { color: #9cf; font-weight: 600; font-size: 15px; }
@@ -46,6 +47,24 @@ html, body { height: 100%; overflow: hidden; background: #05080f; font-family: '
   display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; /* 세로 모드: 체크란 2열 */
 }
 #toggles .master { color: #ffd97a; font-weight: 600; }
+
+/* 모바일: 리모콘을 화면 하단에 전체 폭으로 고정 (좌/우 배치 무시) */
+@media (max-width: 768px) {
+  #remote, #remote.pos-left, #remote.pos-right {
+    top: auto; bottom: 0; left: 0; right: 0; transform: none;
+    width: 100%; min-width: 0; max-height: 52vh; overflow-y: auto;
+    border-radius: 14px 14px 0 0;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  }
+  #remote.pos-left .row, #remote.pos-right .row { flex-direction: row; align-items: center; }
+  #remote.pos-left .grp, #remote.pos-right .grp { width: 34px; }
+  #remote.pos-left #toggles, #remote.pos-right #toggles { display: flex; }
+  #remoteBar .grp, #posLeft, #posBottom, #posRight { display: none; } /* 위치 선택 버튼 숨김 */
+  #remote button { padding: 5px 9px; font-size: 12px; }
+  #remote label { font-size: 12px; }
+  #daySlider { min-width: 120px; }
+  #remoteShow { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
+}
 .label-moon { color: #ccc; font-size: 12px; }
 .label-sun { color: #ffdd66; font-weight: 700; font-size: 17px; text-shadow: 0 0 8px #b8860b, 0 0 4px #000; }
 #copyright { font-size: 11px; color: #67809a; justify-content: center; }

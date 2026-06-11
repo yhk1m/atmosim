@@ -11,7 +11,7 @@ const state = {
     trade: true, west: true, polarwind: true,
     belts: true, itcz: true,
     latEq: true, latTropic: true, lat3060: true, latPolar: true,
-    cells: false, polar: true, moon: true,
+    cells: true, polar: true, moon: true, labels: true,
   },
   cameraPreset: 'default',
   presetSeq: 0,          // 같은 프리셋 재클릭도 적용되도록 증가 카운터

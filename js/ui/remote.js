@@ -22,7 +22,7 @@ export function initRemote() {
   // 일괄 선택/해제 (바람 전체 / 전체)
   const WIND_KEYS = ['trade', 'west', 'polarwind'];
   const LAT_KEYS = ['latEq', 'latTropic', 'lat3060', 'latPolar'];
-  const ALL_KEYS = [...WIND_KEYS, 'belts', 'itcz', ...LAT_KEYS, 'cells', 'polar', 'moon'];
+  const ALL_KEYS = [...WIND_KEYS, 'belts', 'itcz', ...LAT_KEYS, 'cells', 'polar', 'moon', 'labels'];
   const windAll = $('windAll'), latAll = $('latAll'), allToggles = $('allToggles');
   function setKeys(keys, on) {
     const t = { ...getState().toggles };
@@ -36,13 +36,20 @@ export function initRemote() {
     b.onclick = () => setState({ cameraPreset: b.dataset.view, presetSeq: getState().presetSeq + 1 });
   });
 
-  // 리모콘 위치 (하단/좌/우) + 숨기기 — localStorage에 기억
+  // 리모콘 위치 (하단/좌/우) + 숨기기 — localStorage에 기억. 모바일은 항상 하단 고정
   const remote = $('remote'), showBtn = $('remoteShow');
-  function setPos(pos) {
+  const mobileMq = window.matchMedia('(max-width: 768px)');
+  function applyPos() {
+    const pos = mobileMq.matches ? 'bottom' : savedPos;
     remote.classList.remove('pos-left', 'pos-right');
     if (pos === 'left' || pos === 'right') remote.classList.add(`pos-${pos}`);
-    try { localStorage.setItem('atmosim.remotePos', pos); } catch {}
   }
+  function setPos(pos) {
+    savedPos = pos;
+    try { localStorage.setItem('atmosim.remotePos', pos); } catch {}
+    applyPos();
+  }
+  mobileMq.addEventListener('change', applyPos);
   $('posLeft').onclick = () => setPos('left');
   $('posBottom').onclick = () => setPos('bottom');
   $('posRight').onclick = () => setPos('right');
