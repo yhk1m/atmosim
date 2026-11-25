@@ -112,9 +112,11 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
 #hud { font-size: var(--fs-small); color: var(--text-strong); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
 
 #copyright { justify-content: center; gap: var(--sp-2) !important; font-size: var(--fs-caption); color: var(--text-muted); }
-#copyright a { display: inline-block; padding: var(--sp-3) 0; color: var(--text-muted); text-decoration: underline; text-underline-offset: 2px; }
-#copyright a:hover { color: var(--text-strong); }
+#copyright > span a { display: inline-block; padding: var(--sp-3) 0; color: var(--text-muted); text-decoration: underline; text-underline-offset: 2px; }
+#copyright > span a:hover { color: var(--text-strong); }
 #copyright .bgnl-fam__btn { font-size: var(--fs-caption); }
+/* 조작판 안에서 스크롤되므로 목록이 조작판 위로 잘리지 않게 높이를 줄이고 목록 안에서 스크롤 */
+#copyright .bgnl-fam__list { max-height: min(16rem, 40dvh); }
 
 /* 좌우 배치: 세로로 긴 판 */
 #remote.pos-left, #remote.pos-right {
@@ -225,7 +227,6 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
   #remote #views .grp { display: none; }
 
   #hudRow { justify-content: center; }
-  #copyright .bgnl-fam__list { max-height: 34dvh; }
   #helpPanel { top: auto; bottom: 0; right: 0; left: 0; width: 100%; max-width: none; max-height: 80dvh;
     border-radius: var(--r-sheet) var(--r-sheet) 0 0; padding-bottom: calc(var(--sp-5) + env(safe-area-inset-bottom)); }
 }
