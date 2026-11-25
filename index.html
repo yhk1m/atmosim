@@ -1,10 +1,10 @@
 <!-- © 2026 김용현 -->
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#05080f">
 <title>대기 대순환 시뮬레이터</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -31,6 +31,7 @@
       <button type="button" id="posRight" aria-label="오른쪽에 두기" title="오른쪽에 두기"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
     </div>
     <button type="button" id="fullscreenBtn" class="btn-ghost"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>전체 화면</span></button>
+    <button type="button" id="helpBtn" class="btn-ghost" aria-expanded="false" aria-controls="helpPanel"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg><span>축척 안내</span></button>
     <span class="spacer"></span>
     <button type="button" id="remoteHide" class="btn-ghost"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span>조작판 접기</span></button>
   </div>
@@ -81,7 +82,6 @@
   <div class="row" id="copyright"><div data-bgnl-family></div><span>2026 양정고등학교 지리교사 김용현, <a href="https://bgnl.kr" target="_blank" rel="noopener">bgnl.kr</a></span></div>
 </div>
 <button type="button" id="remoteShow" class="hidden float-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>조작판 열기</span></button>
-<button type="button" id="helpBtn" class="float-btn" aria-label="축척 안내" aria-expanded="false" aria-controls="helpPanel"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg><span>축척</span></button>
 <div id="helpPanel" class="hidden" role="dialog" aria-labelledby="helpTitle">
   <div class="help-head"><h2 id="helpTitle">축척 안내</h2><button type="button" id="helpClose" aria-label="닫기"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
   <p class="help-intro">한 화면에 모두 담으려고 크기와 거리를 실제와 다르게 줄였어요. 단위는 지구 반지름(R)이에요.</p>

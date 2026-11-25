@@ -1,5 +1,5 @@
 /* © 2026 김용현 */
-/* 당토 디자인: 값은 tokens.css. 우주 화면(3D)은 늘 어둡고, 조작판과 안내 창만 라이트/다크를 따른다 */
+/* 당토 디자인: 값은 tokens.css. 우주 화면(3D)에 맞춰 조작판과 안내 창도 늘 다크(html data-theme="dark") */
 
 html, body { height: 100%; overflow: hidden; }
 body { background: #05080f; font-family: var(--font); color: var(--text); }
@@ -31,7 +31,8 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
 /* ---- 조작판 ---- */
 #remote {
   position: fixed; left: 50%; bottom: var(--sp-3); transform: translateX(-50%);
-  width: min(800px, calc(100% - 24px));
+  /* 폭은 내용에 맞춘다. 화면보다 넓을 때만 줄바꿈 */
+  width: max-content; max-width: calc(100% - 24px);
   max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain;
   background: var(--surface); color: var(--text);
   border-radius: var(--r-card); box-shadow: var(--shadow-3);
@@ -93,14 +94,16 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
 
 /* 좌우 배치: 세로로 긴 판 */
 #remote.pos-left, #remote.pos-right {
-  top: var(--sp-3); bottom: var(--sp-3); transform: none; width: 272px; max-height: none;
+  top: var(--sp-3); bottom: var(--sp-3); transform: none;
+  width: max-content; max-width: min(34rem, calc(100% - 24px)); max-height: none;
 }
 #remote.pos-left  { left: var(--sp-3); right: auto; }
 #remote.pos-right { right: var(--sp-3); left: auto; }
 #remote.pos-left .row, #remote.pos-right .row { flex-direction: column; align-items: stretch; }
 #remote.pos-left .grp, #remote.pos-right .grp { width: auto; }
 #remote.pos-left input[type=range], #remote.pos-right input[type=range] { width: 100%; flex: none; }
-#remote.pos-left #remoteBar, #remote.pos-right #remoteBar { flex-direction: row; flex-wrap: wrap; align-items: center; }
+#remote.pos-left #remoteBar, #remote.pos-right #remoteBar { flex-direction: row; flex-wrap: nowrap; align-items: center; }
+#remote button, #remote label { white-space: nowrap; }
 #remote.pos-left #remoteBar .grp, #remote.pos-right #remoteBar .grp { display: none; }
 #remote.pos-left #remoteBar .spacer, #remote.pos-right #remoteBar .spacer { display: none; }
 #remote.pos-left #toggles, #remote.pos-right #toggles { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-1); }
@@ -111,6 +114,14 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
 #remote.pos-left #daySlider, #remote.pos-right #daySlider { grid-column: 1 / -1; }
 #remote.pos-left #motion, #remote.pos-right #motion { display: grid; grid-template-columns: auto 1fr; gap: var(--sp-2); align-items: center; }
 #remote.pos-left #motion .grp, #remote.pos-right #motion .grp { grid-column: 1 / -1; }
+
+/* 아래 배치: 켜고 끄기 16개를 8개씩 두 줄로 고르게 (외톨이 줄 없음) */
+@media (min-width: 744px) {
+  #remote:not(.pos-left):not(.pos-right) #toggles { display: grid; grid-template-columns: repeat(8, max-content); }
+  #remote:not(.pos-left):not(.pos-right) #dateRow { flex-wrap: nowrap; }
+  #remote:not(.pos-left):not(.pos-right) #dateRow .season { flex-shrink: 0; white-space: nowrap; }
+  #remote:not(.pos-left):not(.pos-right) #daySlider { min-width: 12rem; }
+}
 
 /* ---- 떠 있는 단추 (조작판 열기, 축척 안내) ---- */
 .float-btn {
@@ -123,18 +134,19 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
 }
 @media (hover: hover) { .float-btn:hover { background: var(--fill-subtle); } }
 #remoteShow { right: var(--sp-4); bottom: calc(var(--sp-4) + env(safe-area-inset-bottom)); }
-#helpBtn { top: calc(var(--sp-3) + env(safe-area-inset-top)); right: var(--sp-4); }
 #remote.hidden, #remoteShow.hidden { display: none; }
 
 /* ---- 축척 안내 창 ---- */
 #helpPanel {
-  position: fixed; top: calc(64px + env(safe-area-inset-top)); right: var(--sp-4); z-index: 12;
-  width: 440px; max-width: calc(100% - 32px); max-height: calc(100dvh - 88px); overflow-y: auto;
+  position: fixed; top: calc(var(--sp-3) + env(safe-area-inset-top)); right: var(--sp-4); z-index: 12;
+  width: 440px; max-width: calc(100% - 32px); max-height: calc(100dvh - 24px); overflow-y: auto;
   background: var(--surface); color: var(--text);
   border-radius: var(--r-sheet); box-shadow: var(--shadow-3);
   padding: var(--sp-4) var(--sp-5) var(--sp-5); font-size: var(--fs-small); line-height: var(--lh-body);
 }
 #helpPanel.hidden { display: none; }
+/* 조작판이 오른쪽에 있으면 안내 창은 왼쪽에 */
+#remote.pos-right ~ #helpPanel { right: auto; left: var(--sp-4); }
 .help-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-2); }
 .help-head h2 { font-size: var(--fs-title-s); font-weight: var(--fw-bold); color: var(--text-strong); letter-spacing: var(--ls-title); }
 #helpClose { display: inline-flex; align-items: center; justify-content: center; width: var(--touch); height: var(--touch);
@@ -171,7 +183,8 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
 
   /* 위치 단추는 숨기고 전체 화면, 접기를 반반 */
   #remoteBar .grp, #remoteBar .seg, #remoteBar .spacer { display: none !important; }
-  #remoteBar button { flex: 1; }
+  #remoteBar button { flex: 1; padding: 0 var(--sp-1); }
+  #remote label { padding: 0 var(--sp-1) 0 0; }
 
   #remote #motion, #remote.pos-left #motion, #remote.pos-right #motion { display: grid; grid-template-columns: 2.25rem auto minmax(0, 1fr); gap: var(--sp-2); align-items: center; }
   #remote.pos-left #motion .grp, #remote.pos-right #motion .grp { grid-column: auto; }
