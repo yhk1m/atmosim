@@ -81,7 +81,31 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
   min-height: 2rem; padding: 0 var(--sp-2) 0 var(--sp-1);
   font-size: var(--fs-small); color: var(--text); cursor: pointer; border-radius: var(--r-control);
 }
-#remote label input { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); }
+/* 체크: SEED Checkbox(Square) 모양. 네모 20px, 모서리 6px, 고르면 주색 채움에 흰 체크, 일부만 켜지면 가로줄 */
+#remote label input[type=checkbox] {
+  appearance: none; -webkit-appearance: none; flex-shrink: 0;
+  width: 20px; height: 20px; margin: 0;
+  border: 1.5px solid var(--icon-muted); border-radius: 6px;
+  background: transparent center / 14px 14px no-repeat;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+#remote label input[type=checkbox]:checked,
+#remote label input[type=checkbox]:indeterminate {
+  border-color: var(--accent); background-color: var(--accent);
+}
+#remote label input[type=checkbox]:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1a2b' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+}
+#remote label input[type=checkbox]:indeterminate {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1a2b' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
+}
+#remote label:active input[type=checkbox] { transform: scale(0.92); }
+#remote label input[type=checkbox]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (hover: hover) {
+  #remote label:hover input[type=checkbox]:not(:checked):not(:indeterminate) { border-color: var(--text-muted); }
+}
+@media (prefers-reduced-motion: reduce) { #remote label input[type=checkbox] { transition: none; } }
 #toggles .master { font-weight: var(--fw-semibold); color: var(--text-strong); }
 
 #hudRow { padding-top: var(--sp-2) !important; }
