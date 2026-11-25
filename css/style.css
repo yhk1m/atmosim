@@ -1,132 +1,194 @@
 /* © 2026 김용현 */
-* { margin: 0; box-sizing: border-box; }
-html, body { height: 100%; overflow: hidden; background: #05080f; font-family: 'Segoe UI', 'Malgun Gothic', sans-serif; }
+/* 당토 디자인: 값은 tokens.css. 우주 화면(3D)은 늘 어둡고, 조작판과 안내 창만 라이트/다크를 따른다 */
+
+html, body { height: 100%; overflow: hidden; }
+body { background: #05080f; font-family: var(--font); color: var(--text); }
+
+.icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
 #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 #labels { position: fixed; inset: 0; pointer-events: none; }
 .no-labels #labels { display: none; }
 #labels * { pointer-events: none; }
-.label { color: #dde; font-size: 13px; text-shadow: 0 0 4px #000; transition: opacity .4s; }
+
+/* ---- 3D 위 이름표 (우주 바탕이라 밝은 자료 색 그대로) ---- */
+.label { color: #dde3ee; font-size: 13px; text-shadow: 0 0 4px #000; transition: opacity var(--dur-slow); }
 .label-season { color: #9cf; font-weight: 600; font-size: 15px; }
 .near .label-season { opacity: 0; }
 .far .label-lat, .far .label-wind, .far .label-polar, .far .label-belt { opacity: 0; }
-.label-belt { font-size: 12px; font-weight: 600; }
+.label-belt { font-size: 13px; font-weight: 600; }
 .label-low  { color: #ff9b8a; }
 .label-high { color: #8fb6ff; }
-.label-wind { font-weight: 700; font-size: 12px; }
+.label-wind { font-weight: 700; font-size: 13px; }
 .label-trade { color: #ff8866; }
 .label-west  { color: #77aaff; }
 .label-polarwind { color: #cc99ff; }
 .label-polar { color: #ffe9a0; font-weight: 700; }
-#remote { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%);
-  background: rgba(10,16,30,.82); border: 1px solid #2a3a55; border-radius: 14px;
-  padding: 10px 16px; color: #cde; backdrop-filter: blur(8px); min-width: 740px; z-index: 10; }
-#remote .row { display: flex; align-items: center; gap: 8px; padding: 3px 0; flex-wrap: wrap; }
-#remote .grp { font-size: 12px; color: #89a; width: 34px; flex-shrink: 0; }
-#remote button { background: #1c2940; color: #cde; border: 1px solid #34507a; border-radius: 8px;
-  padding: 4px 10px; cursor: pointer; font-size: 13px; }
-#remote button:hover { background: #28405f; }
-#remote input[type=range] { accent-color: #4a90d9; }
-#daySlider { flex: 1; min-width: 180px; }
-#remote label { font-size: 13px; display: flex; gap: 4px; align-items: center; cursor: pointer; }
-#hud { font-size: 13px; color: #ffd97a; }
-.spacer { flex: 1; }
-#remoteBar button { padding: 3px 8px; font-size: 12px; }
+.label-moon { color: #ccc; font-size: 13px; }
+.label-sun { color: #ffdd66; font-weight: 700; font-size: 17px; text-shadow: 0 0 6px #6b4e00, 0 0 4px #000; }
 
-/* 좌/우 배치: 세로로 긴 패널 */
-#remote.pos-left, #remote.pos-right {
-  top: 12px; bottom: 12px; transform: none;
-  min-width: 0; width: 248px; overflow-y: auto;
+/* ---- 조작판 ---- */
+#remote {
+  position: fixed; left: 50%; bottom: var(--sp-3); transform: translateX(-50%);
+  width: min(800px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain;
+  background: var(--surface); color: var(--text);
+  border-radius: var(--r-card); box-shadow: var(--shadow-3);
+  padding: var(--sp-3) var(--sp-4); z-index: 10;
 }
-#remote.pos-left  { left: 12px; right: auto; }
-#remote.pos-right { right: 12px; left: auto; }
+#remote .row { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-1) 0; flex-wrap: wrap; min-width: 0; }
+#remote .grp { font-size: var(--fs-caption); font-weight: var(--fw-semibold); color: var(--text-muted); width: 2.25rem; flex-shrink: 0; }
+.spacer { flex: 1; }
+
+#remote button {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-1);
+  min-height: 2.25rem; padding: 0 var(--sp-3);
+  border: 0; border-radius: var(--r-control);
+  background: var(--fill-subtle); color: var(--text-strong);
+  font: inherit; font-size: var(--fs-small); font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+#remote button .icon { width: 18px; height: 18px; }
+@media (hover: hover) { #remote button:hover { background: var(--line-strong); } }
+
+#remote .btn-ghost { background: transparent; color: var(--text-muted); }
+@media (hover: hover) { #remote .btn-ghost:hover { background: var(--fill-subtle); color: var(--text-strong); } }
+
+/* 위치 고르기: 묶음 단추 */
+.seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--r-control); background: var(--fill-subtle); }
+#remote .seg button { min-height: 2rem; min-width: 2.25rem; padding: 0 var(--sp-2); background: transparent; color: var(--text-muted); }
+#remote .seg button[aria-pressed="true"] { background: var(--surface); color: var(--text-strong); box-shadow: var(--shadow-1); }
+
+/* 재생 단추 */
+#remote .play { width: 2.25rem; padding: 0; background: var(--accent-weak); color: var(--accent-text); }
+@media (hover: hover) { #remote .play:hover { background: var(--accent-weak-press); } }
+
+/* 절기, 시점 칩: 고른 것만 강조색 */
+#remote .chip { border-radius: var(--r-full); }
+#remote .chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+.season .sdate { margin-left: var(--sp-1); font-size: var(--fs-caption); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.season[aria-pressed="true"] .sdate { color: inherit; opacity: .85; }
+
+#remote input[type=range] { accent-color: var(--accent); min-width: 0; flex: 0 1 140px; height: 2rem; }
+#daySlider { flex: 1 1 180px !important; }
+
+/* 켜고 끄기 */
+#toggles { gap: var(--sp-1) var(--sp-2); }
+#remote label {
+  display: inline-flex; align-items: center; gap: var(--sp-1);
+  min-height: 2rem; padding: 0 var(--sp-2) 0 var(--sp-1);
+  font-size: var(--fs-small); color: var(--text); cursor: pointer; border-radius: var(--r-control);
+}
+#remote label input { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); }
+#toggles .master { font-weight: var(--fw-semibold); color: var(--text-strong); }
+
+#hudRow { padding-top: var(--sp-2) !important; }
+#hud { font-size: var(--fs-small); color: var(--text-strong); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+
+#copyright { justify-content: center; gap: var(--sp-2) !important; font-size: var(--fs-caption); color: var(--text-muted); }
+#copyright a { display: inline-block; padding: var(--sp-3) 0; color: var(--text-muted); text-decoration: underline; text-underline-offset: 2px; }
+#copyright a:hover { color: var(--text-strong); }
+#copyright .bgnl-fam__btn { font-size: var(--fs-caption); }
+
+/* 좌우 배치: 세로로 긴 판 */
+#remote.pos-left, #remote.pos-right {
+  top: var(--sp-3); bottom: var(--sp-3); transform: none; width: 272px; max-height: none;
+}
+#remote.pos-left  { left: var(--sp-3); right: auto; }
+#remote.pos-right { right: var(--sp-3); left: auto; }
 #remote.pos-left .row, #remote.pos-right .row { flex-direction: column; align-items: stretch; }
 #remote.pos-left .grp, #remote.pos-right .grp { width: auto; }
-#remote.pos-left input[type=range], #remote.pos-right input[type=range] { width: 100%; min-width: 0; }
-#remote.pos-left #remoteBar, #remote.pos-right #remoteBar { flex-direction: row; align-items: center; }
-#remote.pos-left #toggles, #remote.pos-right #toggles {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; /* 세로 모드: 체크란 2열 */
-}
-#toggles .master { color: #ffd97a; font-weight: 600; }
+#remote.pos-left input[type=range], #remote.pos-right input[type=range] { width: 100%; flex: none; }
+#remote.pos-left #remoteBar, #remote.pos-right #remoteBar { flex-direction: row; flex-wrap: wrap; align-items: center; }
+#remote.pos-left #remoteBar .grp, #remote.pos-right #remoteBar .grp { display: none; }
+#remote.pos-left #remoteBar .spacer, #remote.pos-right #remoteBar .spacer { display: none; }
+#remote.pos-left #toggles, #remote.pos-right #toggles { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-1); }
+#remote.pos-left #dateRow, #remote.pos-right #dateRow,
+#remote.pos-left #views, #remote.pos-right #views { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-1); }
+#remote.pos-left #dateRow .grp, #remote.pos-right #dateRow .grp,
+#remote.pos-left #views .grp, #remote.pos-right #views .grp,
+#remote.pos-left #daySlider, #remote.pos-right #daySlider { grid-column: 1 / -1; }
+#remote.pos-left #motion, #remote.pos-right #motion { display: grid; grid-template-columns: auto 1fr; gap: var(--sp-2); align-items: center; }
+#remote.pos-left #motion .grp, #remote.pos-right #motion .grp { grid-column: 1 / -1; }
 
-/* 모바일: 리모콘을 화면 하단에 전체 폭으로 고정, 섹션별 그리드 정리 (좌/우 배치 무시) */
-@media (max-width: 768px) {
+/* ---- 떠 있는 단추 (조작판 열기, 축척 안내) ---- */
+.float-btn {
+  position: fixed; z-index: 11;
+  display: inline-flex; align-items: center; gap: var(--sp-1);
+  min-height: var(--touch); padding: 0 var(--sp-4) 0 var(--sp-3);
+  border: 0; border-radius: var(--r-full);
+  background: var(--surface); color: var(--text-strong); box-shadow: var(--shadow-2);
+  font: inherit; font-size: var(--fs-small); font-weight: var(--fw-semibold); cursor: pointer;
+}
+@media (hover: hover) { .float-btn:hover { background: var(--fill-subtle); } }
+#remoteShow { right: var(--sp-4); bottom: calc(var(--sp-4) + env(safe-area-inset-bottom)); }
+#helpBtn { top: calc(var(--sp-3) + env(safe-area-inset-top)); right: var(--sp-4); }
+#remote.hidden, #remoteShow.hidden { display: none; }
+
+/* ---- 축척 안내 창 ---- */
+#helpPanel {
+  position: fixed; top: calc(64px + env(safe-area-inset-top)); right: var(--sp-4); z-index: 12;
+  width: 440px; max-width: calc(100% - 32px); max-height: calc(100dvh - 88px); overflow-y: auto;
+  background: var(--surface); color: var(--text);
+  border-radius: var(--r-sheet); box-shadow: var(--shadow-3);
+  padding: var(--sp-4) var(--sp-5) var(--sp-5); font-size: var(--fs-small); line-height: var(--lh-body);
+}
+#helpPanel.hidden { display: none; }
+.help-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-2); }
+.help-head h2 { font-size: var(--fs-title-s); font-weight: var(--fw-bold); color: var(--text-strong); letter-spacing: var(--ls-title); }
+#helpClose { display: inline-flex; align-items: center; justify-content: center; width: var(--touch); height: var(--touch);
+  margin-right: calc(-1 * var(--sp-2)); border: 0; border-radius: var(--r-full); background: transparent; color: var(--icon-muted); cursor: pointer; }
+@media (hover: hover) { #helpClose:hover { background: var(--fill-subtle); color: var(--text-strong); } }
+.help-intro { margin-bottom: var(--sp-3); }
+.table-wrap { overflow-x: auto; margin-bottom: var(--sp-3); }
+#helpPanel table { width: 100%; border-collapse: collapse; font-size: var(--fs-caption); }
+#helpPanel th, #helpPanel td { padding: var(--sp-2); text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+#helpPanel th { color: var(--text-muted); font-weight: var(--fw-semibold); background: var(--fill-subtle); }
+#helpPanel th:first-child { border-radius: var(--r-badge) 0 0 var(--r-badge); }
+#helpPanel th:last-child { border-radius: 0 var(--r-badge) var(--r-badge) 0; }
+#helpPanel td b, .help-note b { color: var(--text-strong); font-weight: var(--fw-semibold); }
+.help-note { color: var(--text-muted); margin-bottom: var(--sp-2); }
+
+/* ---- 손가락 기기: 누르는 영역 키우기 ---- */
+@media (pointer: coarse), (max-width: 743px) {
+  #remote button, #remote label { min-height: var(--touch); }
+  #remote input[type=range] { height: var(--touch); }
+  #remote .play { width: var(--touch); }
+  #remote .seg button { min-height: 2.5rem; }
+}
+
+/* ---- 휴대폰 (744px 미만): 아래 시트, 좌우 배치 무시 ---- */
+@media (max-width: 743px) {
   #remote, #remote.pos-left, #remote.pos-right {
     top: auto; bottom: 0; left: 0; right: 0; transform: none;
-    width: 100%; min-width: 0; max-height: 55vh; overflow-y: auto;
-    overscroll-behavior: contain;
-    border-radius: 16px 16px 0 0;
-    padding: 6px 12px calc(10px + env(safe-area-inset-bottom));
+    width: 100%; max-height: 55dvh;
+    border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+    padding: var(--sp-2) var(--sp-4) calc(var(--sp-3) + env(safe-area-inset-bottom));
   }
   #remote.pos-left .row, #remote.pos-right .row { flex-direction: row; align-items: center; }
-  #remote.pos-left .grp, #remote.pos-right .grp { width: 34px; }
-  #remote .row { padding: 7px 0; }
-  #remote .row + .row { border-top: 1px solid rgba(64, 90, 134, .3); } /* 섹션 구분선 */
-  #remote button { padding: 6px 8px; font-size: 12px; }
-  #remote label { font-size: 12px; }
+  #remote .row { padding: var(--sp-2) 0; }
 
-  /* 상단 바: 위치 버튼 숨기고 전체화면/숨기기 반반 */
-  #remoteBar .grp, #posLeft, #posBottom, #posRight, #remoteBar .spacer { display: none; }
+  /* 위치 단추는 숨기고 전체 화면, 접기를 반반 */
+  #remoteBar .grp, #remoteBar .seg, #remoteBar .spacer { display: none !important; }
   #remoteBar button { flex: 1; }
 
-  /* 자전·공전: [라벨|버튼|슬라이더] 2행 그리드 */
-  #motion { display: grid; grid-template-columns: 34px auto 1fr; gap: 6px 8px; align-items: center; }
-  #motion input[type=range] { width: 100%; min-width: 0; }
+  #remote #motion, #remote.pos-left #motion, #remote.pos-right #motion { display: grid; grid-template-columns: 2.25rem auto minmax(0, 1fr); gap: var(--sp-2); align-items: center; }
+  #remote.pos-left #motion .grp, #remote.pos-right #motion .grp { grid-column: auto; }
+  #remote #motion input[type=range] { width: 100%; }
 
-  /* 날짜: 슬라이더 전체 폭 + 절기 4등분 (괄호 날짜는 생략 — HUD에 표시됨) */
-  #dateRow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px 6px; }
-  #dateRow .grp { display: none; }
-  #daySlider { grid-column: 1 / -1; width: 100%; min-width: 0; }
+  #remote #dateRow, #remote.pos-left #dateRow, #remote.pos-right #dateRow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-2); }
+  #remote #dateRow .grp { display: none; }
+  #remote #daySlider { grid-column: 1 / -1; width: 100%; }
   .season .sdate { display: none; }
 
-  /* 토글: 3열 그리드 */
-  #toggles, #remote.pos-left #toggles, #remote.pos-right #toggles {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 6px;
-  }
+  #remote #toggles, #remote.pos-left #toggles, #remote.pos-right #toggles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-1); }
 
-  /* 시점: 3열 그리드 */
-  #views { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  #views .grp { display: none; }
+  #remote #views, #remote.pos-left #views, #remote.pos-right #views { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
+  #remote #views .grp { display: none; }
 
   #hudRow { justify-content: center; }
-  #hud { font-size: 12px; }
-  #copyright { font-size: 10px; }
-  #remoteShow { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
+  #copyright .bgnl-fam__list { max-height: 34dvh; }
+  #helpPanel { top: auto; bottom: 0; right: 0; left: 0; width: 100%; max-width: none; max-height: 80dvh;
+    border-radius: var(--r-sheet) var(--r-sheet) 0 0; padding-bottom: calc(var(--sp-5) + env(safe-area-inset-bottom)); }
 }
-.label-moon { color: #ccc; font-size: 12px; }
-.label-sun { color: #ffdd66; font-weight: 700; font-size: 17px; text-shadow: 0 0 8px #b8860b, 0 0 4px #000; }
-#copyright { font-size: 11px; color: #67809a; justify-content: center; }
-#copyright a { color: #7ea7d8; text-decoration: none; }
-#copyright a:hover { text-decoration: underline; }
-#copyright .bgnl-fam__btn { font-size: 12px; }
-#copyright .bgnl-fam__link { color: #cde; }
-@media (max-width: 768px) {
-  #copyright .bgnl-fam__list { max-height: 34vh; } /* 리모콘(최대 55vh, 스크롤) 안에서 잘리지 않게 */
-}
-
-/* 숨기기 / 다시 표시 */
-#remote.hidden, #remoteShow.hidden { display: none; }
-#remoteShow { position: fixed; right: 16px; bottom: 16px; z-index: 10; font-size: 20px;
-  background: rgba(10,16,30,.85); border: 1px solid #34507a; border-radius: 12px;
-  padding: 8px 12px; color: #cde; cursor: pointer; }
-#remoteShow:hover { background: #28405f; }
-
-/* 축척 안내 (? 버튼 + 패널) */
-#helpBtn { position: fixed; top: 14px; right: 16px; z-index: 11; width: 34px; height: 34px;
-  border-radius: 50%; background: rgba(10,16,30,.85); border: 1px solid #34507a;
-  color: #cde; font-size: 17px; font-weight: 700; cursor: pointer; }
-#helpBtn:hover { background: #28405f; }
-#helpPanel { position: fixed; top: 56px; right: 16px; z-index: 11; width: 420px; max-width: calc(100vw - 32px);
-  max-height: calc(100vh - 80px); overflow-y: auto;
-  background: rgba(10,16,30,.92); border: 1px solid #2a3a55; border-radius: 14px;
-  padding: 14px 16px; color: #cde; backdrop-filter: blur(8px); font-size: 13px; }
-#helpPanel.hidden { display: none; }
-.help-head { display: flex; justify-content: space-between; align-items: center;
-  font-size: 15px; font-weight: 700; color: #ffd97a; margin-bottom: 8px; }
-#helpClose { background: none; border: none; color: #89a; font-size: 15px; cursor: pointer; }
-#helpClose:hover { color: #fff; }
-.help-intro { margin-bottom: 8px; line-height: 1.5; }
-#helpPanel table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-#helpPanel th, #helpPanel td { border: 1px solid #2a3a55; padding: 5px 7px; text-align: left; line-height: 1.4; }
-#helpPanel th { background: #1c2940; color: #9fc1e8; font-size: 12px; }
-#helpPanel td { font-size: 12px; }
-.help-note { color: #9ab; line-height: 1.55; margin-bottom: 6px; }

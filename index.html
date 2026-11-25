@@ -3,8 +3,12 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>대기대순환 시뮬레이터</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#05080f">
+<title>대기 대순환 시뮬레이터</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <script type="importmap">
 {
@@ -18,78 +22,84 @@
 <body>
 <canvas id="scene"></canvas>
 <div id="labels"></div>
-<div id="remote">
+<div id="remote" role="region" aria-label="조작판">
   <div class="row" id="remoteBar">
     <span class="grp">위치</span>
-    <button id="posLeft" title="왼쪽에 배치">◀</button>
-    <button id="posBottom" title="아래에 배치">▼</button>
-    <button id="posRight" title="오른쪽에 배치">▶</button>
-    <button id="fullscreenBtn" title="전체화면 전환">⛶ 전체화면</button>
+    <div class="seg" role="group" aria-label="조작판 위치">
+      <button type="button" id="posLeft" aria-label="왼쪽에 두기" title="왼쪽에 두기"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
+      <button type="button" id="posBottom" aria-label="아래에 두기" title="아래에 두기"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 14h18"/></svg></button>
+      <button type="button" id="posRight" aria-label="오른쪽에 두기" title="오른쪽에 두기"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
+    </div>
+    <button type="button" id="fullscreenBtn" class="btn-ghost"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>전체 화면</span></button>
     <span class="spacer"></span>
-    <button id="remoteHide" title="리모콘 숨기기">숨기기 ✕</button>
+    <button type="button" id="remoteHide" class="btn-ghost"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span>조작판 접기</span></button>
   </div>
   <div class="row" id="motion">
     <span class="grp">자전</span>
-    <button id="rotPlay">⏸</button>
-    <input id="rotSpeed" type="range" min="0.1" max="5" step="0.1" value="1">
+    <button type="button" id="rotPlay" class="play" aria-label="자전 멈추기"></button>
+    <input id="rotSpeed" type="range" min="0.1" max="5" step="0.1" value="1" aria-label="자전 빠르기">
     <span class="grp">공전</span>
-    <button id="revPlay">▶</button>
-    <input id="revSpeed" type="range" min="0.1" max="5" step="0.1" value="1">
+    <button type="button" id="revPlay" class="play" aria-label="공전 시작"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg></button>
+    <input id="revSpeed" type="range" min="0.1" max="5" step="0.1" value="1" aria-label="공전 빠르기">
   </div>
   <div class="row" id="dateRow">
     <span class="grp">날짜</span>
-    <input id="daySlider" type="range" min="1" max="365" step="1" value="172">
-    <button class="season" data-day="80">춘분<span class="sdate">(3/20~21)</span></button>
-    <button class="season" data-day="172">하지<span class="sdate">(6/21~22)</span></button>
-    <button class="season" data-day="266">추분<span class="sdate">(9/22~23)</span></button>
-    <button class="season" data-day="355">동지<span class="sdate">(12/21~22)</span></button>
+    <input id="daySlider" type="range" min="1" max="365" step="1" value="172" aria-label="날짜">
+    <button type="button" class="season chip" data-day="80">춘분<span class="sdate">3/20~21</span></button>
+    <button type="button" class="season chip" data-day="172">하지<span class="sdate">6/21~22</span></button>
+    <button type="button" class="season chip" data-day="266">추분<span class="sdate">9/22~23</span></button>
+    <button type="button" class="season chip" data-day="355">동지<span class="sdate">12/21~22</span></button>
   </div>
   <div class="row" id="toggles">
     <label><input type="checkbox" data-key="trade" checked>무역풍</label>
     <label><input type="checkbox" data-key="west" checked>편서풍</label>
     <label><input type="checkbox" data-key="polarwind" checked>극동풍</label>
-    <label class="master"><input type="checkbox" id="windAll" checked>바람 전체</label>
+    <label class="master"><input type="checkbox" id="windAll" checked>바람 모두</label>
     <label><input type="checkbox" data-key="belts" checked>기압대</label>
     <label><input type="checkbox" data-key="itcz" checked>ITCZ</label>
     <label><input type="checkbox" data-key="latEq" checked>적도</label>
     <label><input type="checkbox" data-key="latTropic" checked>회귀선</label>
-    <label><input type="checkbox" data-key="lat3060" checked>30·60도선</label>
+    <label><input type="checkbox" data-key="lat3060" checked>30도, 60도선</label>
     <label><input type="checkbox" data-key="latPolar" checked>극권</label>
-    <label class="master"><input type="checkbox" id="latAll" checked>위선 전체</label>
+    <label class="master"><input type="checkbox" id="latAll" checked>위선 모두</label>
     <label><input type="checkbox" data-key="cells" checked>3세포</label>
-    <label><input type="checkbox" data-key="polar" checked>백야·극야</label>
+    <label><input type="checkbox" data-key="polar" checked>백야, 극야</label>
     <label><input type="checkbox" data-key="moon" checked>달</label>
-    <label><input type="checkbox" data-key="labels" checked>라벨</label>
-    <label class="master"><input type="checkbox" id="allToggles">전체</label>
+    <label><input type="checkbox" data-key="labels" checked>이름표</label>
+    <label class="master"><input type="checkbox" id="allToggles">모두</label>
   </div>
   <div class="row" id="views">
     <span class="grp">시점</span>
-    <button data-view="default">기본</button>
-    <button data-view="north">북극 위</button>
-    <button data-view="south">남극 위</button>
-    <button data-view="equator">적도</button>
-    <button data-view="orbit">궤도 전체</button>
-    <button data-view="sun">태양 중심</button>
+    <button type="button" class="chip" data-view="default">기본</button>
+    <button type="button" class="chip" data-view="north">북극 위</button>
+    <button type="button" class="chip" data-view="south">남극 위</button>
+    <button type="button" class="chip" data-view="equator">적도</button>
+    <button type="button" class="chip" data-view="orbit">궤도 전체</button>
+    <button type="button" class="chip" data-view="sun">태양 중심</button>
   </div>
-  <div class="row" id="hudRow"><span id="hud"></span></div>
-  <div class="row" id="copyright"><div data-bgnl-family></div>Ⓒ 2026. 양정고등학교 지리교사 김용현 | <a href="https://bgnl.kr" target="_blank" rel="noopener">https://bgnl.kr</a></div>
+  <div class="row" id="hudRow"><span id="hud" aria-live="polite"></span></div>
+  <div class="row" id="copyright"><div data-bgnl-family></div><span>2026 양정고등학교 지리교사 김용현, <a href="https://bgnl.kr" target="_blank" rel="noopener">bgnl.kr</a></span></div>
 </div>
-<button id="remoteShow" class="hidden" title="리모콘 표시">🎮</button>
-<button id="helpBtn" title="축척 안내">?</button>
-<div id="helpPanel" class="hidden">
-  <div class="help-head">📏 축척 안내 <button id="helpClose" title="닫기">✕</button></div>
-  <p class="help-intro">이 시뮬레이터는 한 화면에 담기 위해 <b>도식적 축척</b>을 사용합니다. (단위: 지구 반지름 R)</p>
+<button type="button" id="remoteShow" class="hidden float-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg><span>조작판 열기</span></button>
+<button type="button" id="helpBtn" class="float-btn" aria-label="축척 안내" aria-expanded="false" aria-controls="helpPanel"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg><span>축척</span></button>
+<div id="helpPanel" class="hidden" role="dialog" aria-labelledby="helpTitle">
+  <div class="help-head"><h2 id="helpTitle">축척 안내</h2><button type="button" id="helpClose" aria-label="닫기"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <p class="help-intro">한 화면에 모두 담으려고 크기와 거리를 실제와 다르게 줄였어요. 단위는 지구 반지름(R)이에요.</p>
+  <div class="table-wrap">
   <table>
-    <tr><th>항목</th><th>시뮬레이션</th><th>실제</th><th>차이</th></tr>
-    <tr><td>달 크기</td><td>지구의 0.27배</td><td>0.27배</td><td><b>실제와 동일</b> ✓</td></tr>
+    <thead><tr><th>항목</th><th>여기서</th><th>실제</th><th>차이</th></tr></thead>
+    <tbody>
+    <tr><td>달 크기</td><td>지구의 0.27배</td><td>0.27배</td><td><b>실제와 같아요</b></td></tr>
     <tr><td>달 거리</td><td>4 R</td><td>약 60 R (38만 km)</td><td>15배 가깝게</td></tr>
     <tr><td>태양 크기</td><td>지구의 2.5배</td><td>109배</td><td>44배 작게</td></tr>
     <tr><td>태양 거리</td><td>30 R</td><td>약 23,500 R (1억 5천만 km)</td><td>780배 가깝게</td></tr>
-    <tr><td>대기 두께<br>(3세포 단면)</td><td>적도에서 0.5 R</td><td>대류권 약 17 km<br>(0.003 R)</td><td>약 190배 과장<br>적도:극 = 17:8km 비율은 실제</td></tr>
-    <tr><td>자전:공전 속도비</td><td>1 : 20 (1배속 기준)</td><td>1 : 365</td><td>공전을 빠르게</td></tr>
+    <tr><td>대기 두께<br>(3세포 단면)</td><td>적도에서 0.5 R</td><td>대류권 약 17 km<br>(0.003 R)</td><td>약 190배 두껍게<br>적도와 극의 비율 17:8은 실제와 같아요</td></tr>
+    <tr><td>자전과 공전 빠르기</td><td>1 : 20 (1배속)</td><td>1 : 365</td><td>공전을 빠르게</td></tr>
+    </tbody>
   </table>
-  <p class="help-note">💡 실감 비유: 지구가 지름 2cm 구슬이라면, 실제 축척으로 달은 <b>지름 5.5mm·60cm 거리</b>, 태양은 <b>지름 2.2m·235m 거리</b>에 있어야 합니다.</p>
-  <p class="help-note">그 밖의 단순화: 궤도는 원(실제 이심률 0.017), 달 궤도 경사 5.1° 생략, 1년=365일 고정, ITCZ(열적도)·바람 띠는 교과 개념을 표현한 도식 모델, 바람 화살표·기압대 띠 굵기는 보기 좋게 과장.</p>
+  </div>
+  <p class="help-note">지구가 지름 2cm 구슬이라면, 실제 비율로 달은 <b>지름 5.5mm, 60cm 거리</b>에, 태양은 <b>지름 2.2m, 235m 거리</b>에 있어야 해요.</p>
+  <p class="help-note">그 밖에 단순하게 만든 것: 궤도는 원으로 그렸어요(실제 이심률 0.017). 달 궤도 기울기 5.1도는 뺐고, 1년은 365일로 고정했어요. 열적도(ITCZ)와 바람 띠는 교과서 개념을 그림으로 나타낸 모형이고, 바람 화살표와 기압대 띠 굵기는 잘 보이게 키웠어요.</p>
 </div>
 <script type="module" src="js/main.js"></script>
 <script>

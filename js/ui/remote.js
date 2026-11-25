@@ -2,6 +2,9 @@
 import { getState, setState, setToggle, subscribe } from '../state.js';
 import { solarDeclination, itczLat, dayToDate, seasonName } from '../astro.js';
 
+const ICON_PLAY = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>';
+const ICON_PAUSE = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>';
+
 export function initRemote() {
   const $ = (id) => document.getElementById(id);
   const rotPlay = $('rotPlay'), revPlay = $('revPlay'), daySlider = $('daySlider'), hud = $('hud');
@@ -38,11 +41,14 @@ export function initRemote() {
 
   // 리모콘 위치 (하단/좌/우) + 숨기기 — localStorage에 기억. 모바일은 항상 하단 고정
   const remote = $('remote'), showBtn = $('remoteShow');
-  const mobileMq = window.matchMedia('(max-width: 768px)');
+  const mobileMq = window.matchMedia('(max-width: 743px)');
   function applyPos() {
     const pos = mobileMq.matches ? 'bottom' : savedPos;
     remote.classList.remove('pos-left', 'pos-right');
     if (pos === 'left' || pos === 'right') remote.classList.add(`pos-${pos}`);
+    [['posLeft', 'left'], ['posBottom', 'bottom'], ['posRight', 'right']].forEach(([id, p]) => {
+      $(id).setAttribute('aria-pressed', String(pos === p));
+    });
   }
   function setPos(pos) {
     savedPos = pos;
@@ -61,8 +67,14 @@ export function initRemote() {
 
   // 축척 안내 패널
   const helpPanel = $('helpPanel');
-  $('helpBtn').onclick = () => helpPanel.classList.toggle('hidden');
-  $('helpClose').onclick = () => helpPanel.classList.add('hidden');
+  const helpBtn = $('helpBtn');
+  const setHelp = (open) => {
+    helpPanel.classList.toggle('hidden', !open);
+    helpBtn.setAttribute('aria-expanded', String(open));
+  };
+  helpBtn.onclick = () => setHelp(helpPanel.classList.contains('hidden'));
+  $('helpClose').onclick = () => setHelp(false);
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setHelp(false); });
   showBtn.onclick = () => { showBtn.classList.add('hidden'); remote.classList.remove('hidden'); };
   let savedPos = 'bottom';
   try { savedPos = localStorage.getItem('atmosim.remotePos') || 'bottom'; } catch {}
@@ -80,8 +92,16 @@ export function initRemote() {
 
   // 상태 → UI 동기화 (공전 중 슬라이더/HUD 자동 갱신 포함)
   function sync(s) {
-    rotPlay.textContent = s.rotating ? '⏸' : '▶';
-    revPlay.textContent = s.revolving ? '⏸' : '▶';
+    rotPlay.innerHTML = s.rotating ? ICON_PAUSE : ICON_PLAY;
+    rotPlay.setAttribute('aria-label', s.rotating ? '자전 멈추기' : '자전 시작');
+    revPlay.innerHTML = s.revolving ? ICON_PAUSE : ICON_PLAY;
+    revPlay.setAttribute('aria-label', s.revolving ? '공전 멈추기' : '공전 시작');
+    document.querySelectorAll('.season').forEach((b) => {
+      b.setAttribute('aria-pressed', String(Math.round(s.dayOfYear) === +b.dataset.day));
+    });
+    document.querySelectorAll('#views button').forEach((b) => {
+      b.setAttribute('aria-pressed', String(s.cameraPreset === b.dataset.view));
+    });
     daySlider.value = Math.round(s.dayOfYear);
     // 토글 체크박스 ↔ 상태 동기화 (일괄 변경 반영)
     document.querySelectorAll('#toggles input[data-key]').forEach((c) => {
@@ -99,7 +119,7 @@ export function initRemote() {
     const { month, date } = dayToDate(s.dayOfYear);
     const sn = seasonName(s.dayOfYear);
     hud.textContent =
-      `${month}월 ${date}일${sn ? ' · ' + sn : ''} · 태양적위 ${solarDeclination(s.dayOfYear).toFixed(1)}° · ITCZ ${itczLat(s.dayOfYear).toFixed(1)}°`;
+      `${month}월 ${date}일${sn ? ' ' + sn : ''}, 태양 적위 ${solarDeclination(s.dayOfYear).toFixed(1)}°, ITCZ ${itczLat(s.dayOfYear).toFixed(1)}°`;
   }
   subscribe(sync);
   sync(getState());

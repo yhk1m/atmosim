@@ -24,8 +24,8 @@ export function createPolar() {
   const group = new THREE.Group();
   const dayCap = makeCap(0xffee88, 0.45);   // 백야
   const nightCap = makeCap(0x223366, 0.75); // 극야
-  const dayLabel = makeLabel('백야 ☀');
-  const nightLabel = makeLabel('극야 ●');
+  const dayLabel = makeLabel('백야');
+  const nightLabel = makeLabel('극야');
   group.add(dayCap, nightCap, dayLabel, nightLabel);
 
   let built = NaN;
