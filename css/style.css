@@ -42,32 +42,41 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
 #remote .grp { font-size: var(--fs-caption); font-weight: var(--fw-semibold); color: var(--text-muted); width: 2.25rem; flex-shrink: 0; }
 .spacer { flex: 1; }
 
+/* 단추: controls.css .dt-btn--s(weak)와 같은 모양. 높이 36, 굵게, 반투명 회색, 누르면 살짝 작아짐 */
 #remote button {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-1);
   min-height: 2.25rem; padding: 0 var(--sp-3);
   border: 0; border-radius: var(--r-control);
-  background: var(--fill-subtle); color: var(--text-strong);
-  font: inherit; font-size: var(--fs-small); font-weight: var(--fw-medium);
+  background: var(--ctl-weak); color: var(--text-strong);
+  font: inherit; font-size: var(--fs-small); font-weight: var(--fw-bold); line-height: 1.35;
   cursor: pointer;
+  transition: scale var(--dur-fast) var(--ease);   /* 색은 바로 바뀐다: 처음 그릴 때 고른 칩이 흐리게 지나가지 않게 */
 }
 #remote button .icon { width: 18px; height: 18px; }
-@media (hover: hover) { #remote button:hover { background: var(--line-strong); } }
+@media (hover: hover) and (pointer: fine) { #remote button:hover { background: var(--ctl-weak-press); } }
+#remote button:not(:disabled):active { scale: 0.97; }
+#remote button:disabled { cursor: not-allowed; color: var(--text-disabled); background: var(--ctl-weak); }
 
-#remote .btn-ghost { background: transparent; color: var(--text-muted); }
-@media (hover: hover) { #remote .btn-ghost:hover { background: var(--fill-subtle); color: var(--text-strong); } }
+/* 글자만 단추 (dt-btn--ghost) */
+#remote .btn-ghost { background: transparent; color: var(--text); }
+@media (hover: hover) and (pointer: fine) { #remote .btn-ghost:hover { background: var(--ctl-weak); color: var(--text-strong); } }
 
-/* 위치 고르기: 묶음 단추 */
-.seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--r-control); background: var(--fill-subtle); }
-#remote .seg button { min-height: 2rem; min-width: 2.25rem; padding: 0 var(--sp-2); background: transparent; color: var(--text-muted); }
-#remote .seg button[aria-pressed="true"] { background: var(--surface); color: var(--text-strong); box-shadow: var(--shadow-1); }
+/* 위치 고르기: 세그먼트(dt-seg). 알약 회색 길, 고른 칸은 떠 있는 면 */
+.seg { display: inline-flex; gap: 0; padding: 4px; border-radius: var(--r-full); background: var(--ctl-weak); }
+#remote .seg button { min-height: 34px; min-width: 2.25rem; padding: 0 var(--sp-3); border-radius: var(--r-full); background: transparent; color: var(--text-muted); }
+#remote .seg button[aria-pressed="true"] { background: var(--surface-raised); color: var(--text-strong); box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(16, 24, 40, .06); }
+#remote .seg button:not(:disabled):active { scale: none; }
 
-/* 재생 단추 */
+/* 재생 단추: 연한 주색 (dt-btn--brand-weak) */
 #remote .play { width: 2.25rem; padding: 0; background: var(--accent-weak); color: var(--accent-text); }
-@media (hover: hover) { #remote .play:hover { background: var(--accent-weak-press); } }
+@media (hover: hover) and (pointer: fine) { #remote .play:hover { background: var(--accent-weak-press); } }
+#remote .play:not(:disabled):active { background: var(--accent-weak-press); }
 
-/* 절기, 시점 칩: 고른 것만 강조색 */
-#remote .chip { border-radius: var(--r-full); }
-#remote .chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+/* 절기, 시점 칩 (dt-chip): 높이 36 알약, 고른 칩은 진한 회색 채움(주색 아님) */
+#remote .chip { padding: 0 var(--sp-3); border-radius: var(--r-full); font-weight: var(--fw-medium); }
+@media (hover: hover) and (pointer: fine) { #remote .chip:not([aria-pressed="true"]):hover { background: var(--ctl-weak-press); } }
+#remote .chip:not(:disabled):active { scale: 0.96; }
+#remote .chip[aria-pressed="true"] { background: var(--text-strong); color: var(--bg); font-weight: var(--fw-bold); }
 .season .sdate { margin-left: var(--sp-1); font-size: var(--fs-caption); color: var(--text-muted); font-variant-numeric: tabular-nums; }
 .season[aria-pressed="true"] .sdate { color: inherit; opacity: .85; }
 
@@ -81,31 +90,9 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
   min-height: 2rem; padding: 0 var(--sp-2) 0 var(--sp-1);
   font-size: var(--fs-small); color: var(--text); cursor: pointer; border-radius: var(--r-control);
 }
-/* 체크: SEED Checkbox(Square) 모양. 네모 20px, 모서리 6px, 고르면 주색 채움에 흰 체크, 일부만 켜지면 가로줄 */
-#remote label input[type=checkbox] {
-  appearance: none; -webkit-appearance: none; flex-shrink: 0;
-  width: 20px; height: 20px; margin: 0;
-  border: 1.5px solid var(--icon-muted); border-radius: 6px;
-  background: transparent center / 14px 14px no-repeat;
-  cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
-}
-#remote label input[type=checkbox]:checked,
-#remote label input[type=checkbox]:indeterminate {
-  border-color: var(--accent); background-color: var(--accent);
-}
-#remote label input[type=checkbox]:checked {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1a2b' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
-}
-#remote label input[type=checkbox]:indeterminate {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1a2b' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
-}
-#remote label:active input[type=checkbox] { transform: scale(0.92); }
-#remote label input[type=checkbox]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-@media (hover: hover) {
-  #remote label:hover input[type=checkbox]:not(:checked):not(:indeterminate) { border-color: var(--text-muted); }
-}
-@media (prefers-reduced-motion: reduce) { #remote label input[type=checkbox] { transition: none; } }
+/* 체크 모양은 controls.css(SEED Checkbox, 모서리 4, 일부만 켜지면 가로줄). 글자를 눌러도 상자가 눌리는 느낌만 더한다 */
+#remote label:active input[type=checkbox]:not(:disabled) { scale: var(--ctl-press); }
+@media (prefers-reduced-motion: reduce) { #remote label:active input[type=checkbox] { scale: none; } }
 #toggles .master { font-weight: var(--fw-semibold); color: var(--text-strong); }
 
 #hudRow { padding-top: var(--sp-2) !important; }
