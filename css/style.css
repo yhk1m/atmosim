@@ -64,7 +64,7 @@ body { background: #05080f; font-family: var(--font); color: var(--text); }
 /* 위치 고르기: 세그먼트(dt-seg). 알약 회색 길, 고른 칸은 떠 있는 면 */
 .seg { display: inline-flex; gap: 0; padding: 4px; border-radius: var(--r-full); background: var(--ctl-weak); }
 #remote .seg button { min-height: 34px; min-width: 2.25rem; padding: 0 var(--sp-3); border-radius: var(--r-full); background: transparent; color: var(--text-muted); }
-#remote .seg button[aria-pressed="true"] { background: var(--surface-raised); color: var(--text-strong); box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(16, 24, 40, .06); }
+#remote .seg button[aria-pressed="true"] { background: var(--ctl-seg-on); color: var(--text-strong); box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(16, 24, 40, .06); }
 #remote .seg button:not(:disabled):active { scale: none; }
 
 /* 재생 단추: 연한 주색 (dt-btn--brand-weak) */
